@@ -1,0 +1,81 @@
+{
+    "servicos": [
+        {
+            "codigo": "SRV001",
+            "descricao": "Pedreiro",
+            "valorPadrao": 80.0
+        },
+        {
+            "codigo": "SRV002",
+            "descricao": "Engenheiro",
+            "valorPadrao": 200.0
+        },
+        {
+            "codigo": "SRV003",
+            "descricao": "Servente",
+            "valorPadrao": 60.0
+        },
+        {
+            "codigo": "SRV004",
+            "descricao": "Encanador",
+            "valorPadrao": 90.0
+        },
+        {
+            "codigo": "SRV005",
+            "descricao": "Eletricista",
+            "valorPadrao": 95.0
+        },
+        {
+            "codigo": "SRV006",
+            "descricao": "Pintor",
+            "valorPadrao": 75.0
+        }
+    ],
+    "materiais": [
+        {
+            "codigo": "MAT001",
+            "descricao": "Cimento (saco 50kg)",
+            "valorPadrao": 35.0
+        },
+        {
+            "codigo": "MAT002",
+            "descricao": "Tijolo (milheiro)",
+            "valorPadrao": 650.0
+        },
+        {
+            "codigo": "MAT003",
+            "descricao": "Areia (m³)",
+            "valorPadrao": 120.0
+        },
+        {
+            "codigo": "MAT004",
+            "descricao": "Brita (m³)",
+            "valorPadrao": 140.0
+        },
+        {
+            "codigo": "MAT005",
+            "descricao": "Aço CA-50 (kg)",
+            "valorPadrao": 12.5
+        },
+        {
+            "codigo": "MAT006",
+            "descricao": "Tubo PVC 100mm (m)",
+            "valorPadrao": 18.9
+        },
+        {
+            "codigo": "MAT007",
+            "descricao": "Fio elétrico 2.5mm² (m)",
+            "valorPadrao": 2.8
+        },
+        {
+            "codigo": "MAT008",
+            "descricao": "Telha cerâmica (unidade)",
+            "valorPadrao": 3.2
+        },
+        {
+            "codigo": "MAT009",
+            "descricao": "Tinta Acrílica 18L",
+            "valorPadrao": 285.0
+        }
+    ]
+}
