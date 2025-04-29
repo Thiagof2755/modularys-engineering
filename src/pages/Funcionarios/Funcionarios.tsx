@@ -1,7 +1,7 @@
-// src/pages/Funcionarios/Funcionarios.tsx
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { useFuncionarios } from "../../hooks/useFuncionarios";
+import styles from "./Styles/Funcionarios.module.scss";
 
 /**
  * Lista de funcionários com botões de navegação
@@ -11,7 +11,6 @@ const Funcionarios: React.FC = () => {
     const navigate = useNavigate();
 
     const handleVisualizar = (id: string) => {
-        // rota absoluta para /funcionarios/visualizar/:id
         navigate(`/funcionarios/visualizar/${id}`);
     };
 
@@ -20,9 +19,9 @@ const Funcionarios: React.FC = () => {
     };
 
     return (
-        <div>
+        <div className={styles['funcionarios-container']}>
             <h1>Funcionários</h1>
-            <table>
+            <table className={styles['funcionarios-table']}>
                 <thead>
                     <tr>
                         <th>Nome</th>
@@ -34,24 +33,28 @@ const Funcionarios: React.FC = () => {
                     </tr>
                 </thead>
                 <tbody>
-                    {funcionarios.map((funcionario) => (
-                        <tr key={funcionario.id}>
-                            <td>{funcionario.nome}</td>
-                            <td>{funcionario.cpf}</td>
-                            <td>{funcionario.cargo}</td>
-                            <td>{funcionario.departamento}</td>
-                            <td>{funcionario.status}</td>
-                            <td>
-                                <button
-                                    onClick={() => handleVisualizar(funcionario.id)}
-                                >
-                                    Visualizar
-                                </button>
-                                <button
-                                    onClick={() => handleDemonstrativo(funcionario.id)}
-                                >
-                                    Demonstrativo
-                                </button>
+                    {funcionarios.map((func) => (
+                        <tr key={func.id}>
+                            <td data-label="Nome">{func.nome}</td>
+                            <td data-label="CPF">{func.cpf}</td>
+                            <td data-label="Cargo">{func.cargo}</td>
+                            <td data-label="Departamento">{func.departamento}</td>
+                            <td data-label="Status">{func.status}</td>
+                            <td data-label="Ações">
+                                <div className={styles.actions}>
+                                    <button
+                                        className={`${styles.btn} ${styles['btn--view']}`}
+                                        onClick={() => handleVisualizar(func.id)}
+                                    >
+                                        Visualizar
+                                    </button>
+                                    <button
+                                        className={`${styles.btn} ${styles['btn--demo']}`}
+                                        onClick={() => handleDemonstrativo(func.id)}
+                                    >
+                                        Demonstrativo
+                                    </button>
+                                </div>
                             </td>
                         </tr>
                     ))}

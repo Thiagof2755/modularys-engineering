@@ -112,5 +112,24 @@
         "estadoCivil": "Solteira",
         "escolaridade": "Superior Cursando",
         "turno": "Manhã"
+    },
+    {
+        "id": "000007",
+        "nome": "Vitoria Ribeiro Rosa",
+        "cpf": "000.000.000-00",
+        "email": "vitoria.rosa@engenhariaobras.com",
+        "telefone": "(11) 95555-4444",
+        "dataNascimento": "1993-03-15",
+        "dataAdmissao": "2023-10-01",
+        "matricula": "ENG007",
+        "cargo": "Advogada",
+        "departamento": "Jurídico",
+        "salarioBase": 15000.00,
+        "status": "Ativo",
+        "tipoContrato": "CLT",
+        "sexo": "Feminino",
+        "estadoCivil": "Solteira",
+        "escolaridade": "Superior Completo",
+        "turno": "Integral"
     }
 ]
