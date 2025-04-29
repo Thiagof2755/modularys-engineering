@@ -384,3 +384,54 @@ $breakpoint-xl: 1200px;
 .funcionarios-container {
     animation: fadeIn 0.3s ease-in-out;
 }
+
+.search-input {
+    width: 100%;
+    max-width: 400px;
+    padding: 0.5rem 1rem;
+    margin-bottom: 1.5rem;
+    font-size: 0.95rem;
+    border: 1px solid $border-color;
+    border-radius: $border-radius-sm;
+    background-color: white;
+    color: $text-primary;
+    transition: $transition-default;
+    box-shadow: $shadow-sm;
+
+    &:focus {
+        outline: none;
+        border-color: $primary-color;
+        box-shadow: 0 0 0 2px rgba($primary-color, 0.2);
+    }
+
+    &::placeholder {
+        color: $text-tertiary;
+        font-weight: 400;
+    }
+}
+
+.pagination {
+    @include flex(row, center, center, 1rem);
+    margin-top: 1.5rem;
+
+    button {
+        @include button(rgba($primary-color, 0.1), $primary-color, rgba($primary-color, 0.2));
+        font-size: 0.875rem;
+        padding: 0.5rem 1rem;
+
+        &:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+    }
+
+    span {
+        font-size: 0.875rem;
+        color: $text-secondary;
+    }
+
+    @include responsive(sm) {
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+}

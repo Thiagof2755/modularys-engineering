@@ -170,9 +170,14 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
                     {isCollapsed ? <ChevronRight size={20} /> : <ChevronLeft size={20} />}
                 </ToggleButton>
 
-                <LogoContainer isCollapsed={isCollapsed}>
-                    <Building size={24} />
-                    {!isCollapsed && <LogoText>Modularys</LogoText>}
+                <LogoContainer
+                  isCollapsed={isCollapsed}
+                  onClick={() => navigate('/')}
+                  style={{ cursor: 'pointer' }}
+                  title="Go to Home"
+                >
+                  <Building size={24} />
+                  {!isCollapsed && <LogoText>Modularys</LogoText>}
                 </LogoContainer>
 
                 <NavContainer>
