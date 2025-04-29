@@ -1,45 +1,61 @@
-// src/routes/AppRoutes.tsx
-import React from 'react';
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
-import Login from '../pages/Login';
-import Home from '../pages/Home';
-import Orcamento from '../pages/Orcamento/Orcamento';
+import React, { Suspense, lazy } from "react";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import PrivateRoute from "./PrivateRoute";
+import MainLayout from "../components/MainLayout";
 
-// Componente para rotas protegidas
-const PrivateRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-    const { isAuthenticated } = useAuth();
+// Lazy loading das páginas principais
+const Login = lazy(() => import("../pages/Login"));
+const Home = lazy(() => import("../pages/Home"));
+const Orcamento = lazy(() => import("../pages/Orcamento/Orcamento"));
+const FuncionariosRoutes = lazy(() => import("./FuncionariosRoutes"));
 
-    if (!isAuthenticated) {
-        return <Navigate to="/login" replace />;
-    }
-
-    return <>{children}</>;
-};
-
+/**
+ * Componente que define as rotas principais da aplicação.
+ */
 const AppRoutes: React.FC = () => {
     return (
         <BrowserRouter>
-            <Routes>
-                <Route path="/login" element={<Login />} />
-                <Route
-                    path="/"
-                    element={
-                        <PrivateRoute>
-                            <Home />
-                        </PrivateRoute>
-                    }
-                />
-                <Route
-                    path="/orcamento"
-                    element={
-                        <PrivateRoute>
-                            <Orcamento />
-                        </PrivateRoute>
-                    }
-                />
-                <Route path="*" element={<Navigate to="/" replace />} />
-            </Routes>
+            <Suspense fallback={<div>Carregando...</div>}>
+                <Routes>
+                    {/* Rota pública */}
+                    <Route path="/login" element={<Login />} />
+
+                    {/* Home sem layout lateral */}
+                    <Route
+                        path="/"
+                        element={
+                            <PrivateRoute>
+                                <Home />
+                            </PrivateRoute>
+                        }
+                    />
+
+                    {/* Páginas privadas com layout lateral */}
+                    <Route
+                        path="/orcamento"
+                        element={
+                            <PrivateRoute>
+                                <MainLayout>
+                                    <Orcamento />
+                                </MainLayout>
+                            </PrivateRoute>
+                        }
+                    />
+                    <Route
+                        path="/funcionarios/*"
+                        element={
+                            <PrivateRoute>
+                                <MainLayout>
+                                    <FuncionariosRoutes />
+                                </MainLayout>
+                            </PrivateRoute>
+                        }
+                    />
+
+                    {/* Qualquer outra rota vai pra home */}
+                    <Route path="*" element={<Navigate to="/" replace />} />
+                </Routes>
+            </Suspense>
         </BrowserRouter>
     );
 };

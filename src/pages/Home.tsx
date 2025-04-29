@@ -212,85 +212,93 @@ const Footer = styled.footer`
 `;
 
 const Home = () => {
-        const navigate = useNavigate();
-        const { logout } = useAuth();
+    const navigate = useNavigate();
+    const { logout } = useAuth();
 
-        // Dados dos módulos
-        const modules = [
-                {
-                        id: 1,
-                        title: 'Orçamento',
-                        description: 'Gerenciamento completo de orçamentos de projetos',
-                        icon: '💰',
-                        path: '/orcamento',
-                        color: '#3498db'
-                },
-                {
-                        id: 2,
-                        title: 'Projetos',
-                        description: 'Visualização e gerenciamento de projetos',
-                        icon: '📊',
-                        path: '/projetos',
-                        color: '#27ae60'
-                },
-                {
-                        id: 3,
-                        title: 'Recursos',
-                        description: 'Alocação e gerenciamento de recursos',
-                        icon: '🤝',
-                        path: '/recursos',
-                        color: '#e67e22'
-                },
-                {
-                        id: 4,
-                        title: 'Relatórios',
-                        description: 'Geração de relatórios e análises',
-                        icon: '📋',
-                        path: '/relatorios',
-                        color: '#9b59b6'
-                }
-        ];
+    // Dados dos módulos
+    const modules = [
+        {
+            id: 1,
+            title: 'Orçamento',
+            description: 'Gerenciamento completo de orçamentos de projetos',
+            icon: '💰',
+            path: '/orcamento',
+            color: '#3498db'
+        },
+        {
+            id: 2,
+            title: 'Funcionários',
+            description: 'Cadastro e gerenciamento de funcionários',
+            icon: '🧑‍💼',
+            path: '/funcionarios',
+            color: '#2ecc71'
+        },
+        {
+            id: 3,
+            title: 'Projetos',
+            description: 'Visualização e gerenciamento de projetos',
+            icon: '📊',
+            path: '/projetos',
+            color: '#27ae60'
+        },
+        {
+            id: 4,
+            title: 'Recursos',
+            description: 'Alocação e gerenciamento de recursos',
+            icon: '🤝',
+            path: '/recursos',
+            color: '#e67e22'
+        },
+        {
+            id: 5,
+            title: 'Relatórios',
+            description: 'Geração de relatórios e análises',
+            icon: '📋',
+            path: '/relatorios',
+            color: '#9b59b6'
+        }
+    ];
 
-        return (
-                <>
-                        <Header>
-                                <LogoArea>
-                                        <Logo>
-                                                Modularys <span>Engineering</span>
-                                        </Logo>
-                                </LogoArea>
-                                <ButtonGroup>
-                                        <NotificationButton onClick={() => { }}>Notificações</NotificationButton>
-                                        <LogoutButton onClick={logout}>Sair</LogoutButton>
-                                </ButtonGroup>
-                        </Header>
+    return (
+        <>
+            <Header>
+                <LogoArea>
+                    <Logo>
+                        Modularys <span>Engineering</span>
+                    </Logo>
+                </LogoArea>
+                <ButtonGroup>
+                    <NotificationButton onClick={() => { }}>Notificações</NotificationButton>
+                    <LogoutButton onClick={logout}>Sair</LogoutButton>
+                </ButtonGroup>
+            </Header>
 
-                        <Wrapper>
-                                <Section>
-                                        <SectionTitle>Módulos do Sistema</SectionTitle>
-                                        <Grid>
-                                                {modules.map(module => (
-                                                        <ModuleCard
-                                                                key={module.id}
-                                                                onClick={() => navigate(module.path)}
-                                                                color={module.color}
-                                                        >
-                                                                <CardHeader>
-                                                                        <ModuleIcon color={module.color}>{module.icon}</ModuleIcon>
-                                                                        <CardTitle>{module.title}</CardTitle>
-                                                                </CardHeader>
-                                                                <CardDescription>{module.description}</CardDescription>
-                                                        </ModuleCard>
-                                                ))}
-                                        </Grid>
-                                </Section>
-                        </Wrapper>
+            <Wrapper>
+                <Section>
+                    <SectionTitle>Módulos do Sistema</SectionTitle>
+                    <Grid>
+                        {modules.map(module => (
+                            <ModuleCard
+                                key={module.id}
+                                onClick={() => navigate(module.path)}
+                                color={module.color}
+                            >
+                                <CardHeader>
+                                    <ModuleIcon color={module.color}>{module.icon}</ModuleIcon>
+                                    <CardTitle>{module.title}</CardTitle>
+                                </CardHeader>
+                                <CardDescription>{module.description}</CardDescription>
+                            </ModuleCard>
+                        ))}
+                    </Grid>
+                </Section>
+            </Wrapper>
 
-                        <Footer>
-                                &copy; 2025 Modularys Engineering. Todos os direitos reservados.
-                        </Footer>
-                </>
-        );
+            <Footer>
+                &copy; 2025 Modularys Engineering. Todos os direitos reservados.
+            </Footer>
+        </>
+    );
 };
 
 export default Home;
