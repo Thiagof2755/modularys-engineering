@@ -1,0 +1,82 @@
+[
+    {
+        "codigo": "000001",
+        "nome": "João Silva",
+        "cnpj": "12.345.678/0001-90",
+        "telefone": "(11) 98765-4321",
+        "email": "joao.silva@example.com",
+        "endereco": "Rua das Flores, 123, São Paulo, SP"
+    },
+    {
+        "codigo": "000002",
+        "nome": "Maria Oliveira",
+        "cnpj": "23.456.789/0001-01",
+        "telefone": "(21) 91234-5678",
+        "email": "maria.oliveira@example.com",
+        "endereco": "Avenida Brasil, 456, Rio de Janeiro, RJ"
+    },
+    {
+        "codigo": "000003",
+        "nome": "Carlos Pereira",
+        "cnpj": "34.567.890/0001-12",
+        "telefone": "(31) 99876-5432",
+        "email": "carlos.pereira@example.com",
+        "endereco": "Praça da Liberdade, 789, Belo Horizonte, MG"
+    },
+    {
+        "codigo": "000004",
+        "nome": "Ana Costa",
+        "cnpj": "45.678.901/0001-23",
+        "telefone": "(41) 98765-1234",
+        "email": "ana.costa@example.com",
+        "endereco": "Rua XV de Novembro, 101, Curitiba, PR"
+    },
+    {
+        "codigo": "000005",
+        "nome": "Pedro Santos",
+        "cnpj": "56.789.012/0001-34",
+        "telefone": "(51) 91234-8765",
+        "email": "pedro.santos@example.com",
+        "endereco": "Avenida Farrapos, 202, Porto Alegre, RS"
+    },
+    {
+        "codigo": "000006",
+        "nome": "Fernanda Lima",
+        "cnpj": "67.890.123/0001-45",
+        "telefone": "(61) 99876-4321",
+        "email": "fernanda.lima@example.com",
+        "endereco": "Esplanada dos Ministérios, Brasília, DF"
+    },
+    {
+        "codigo": "000007",
+        "nome": "Ricardo Almeida",
+        "cnpj": "78.901.234/0001-56",
+        "telefone": "(71) 98765-6789",
+        "email": "ricardo.almeida@example.com",
+        "endereco": "Pelourinho, Salvador, BA"
+    },
+    {
+        "codigo": "000008",
+        "nome": "Juliana Souza",
+        "cnpj": "89.012.345/0001-67",
+        "telefone": "(81) 91234-5678",
+        "email": "juliana.souza@example.com",
+        "endereco": "Rua da Aurora, 303, Recife, PE"
+    },
+    {
+        "codigo": "000009",
+        "nome": "Roberto Nunes",
+        "cnpj": "90.123.456/0001-78",
+        "telefone": "(91) 99876-5432",
+        "email": "roberto.nunes@example.com",
+        "endereco": "Ver-o-Peso, Belém, PA"
+    },
+    {
+        "codigo": "000010",
+        "nome": "Patrícia Mendes",
+        "cnpj": "01.234.567/0001-89",
+        "telefone": "(85) 98765-4321",
+        "email": "patricia.mendes@example.com",
+        "endereco": "Beira Mar, Fortaleza, CE"
+    }
+]

@@ -95,6 +95,18 @@ export function useFuncionarios() {
     }
 
     /**
+     * Calcula e retorna a média salarial de funcionários com base no cargo.
+     *     
+     * @param cargo - Cargo do funcionário.
+     * @returns A média salarial dos funcionários com o cargo especificado.
+     */
+    function getMediaSalarioPorCargo(cargo: string): number {
+        const funcionariosDoCargo = funcionarios.filter((func) => func.cargo === cargo);
+        const totalSalario = funcionariosDoCargo.reduce((total, func) => total + func.salarioBase, 0);
+        return funcionariosDoCargo.length > 0 ? totalSalario / funcionariosDoCargo.length : 0;
+    }
+
+    /**
      * Calcula e retorna os custos detalhados de um funcionário com base no seu salário base.
      * Utiliza a função utilitária `calcularCustosFuncionario`.
      *
@@ -112,5 +124,8 @@ export function useFuncionarios() {
         funcionarios: getFuncionariosBasico(),
         getFuncionarioById,
         getCustosFuncionarioById,
+        getMediaSalarioPorCargo,
     };
+
+    /* */
 }

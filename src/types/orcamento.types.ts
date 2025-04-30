@@ -1,37 +1,30 @@
-export type TipoProduto = 'servico' | 'material';
+// src/types/orcamento.types.ts
 
 export interface Cliente {
     codigo: string;
     nome: string;
-    endereco: string;
-    telefone: string;
-    email: string;
     cnpj: string;
+    telefone?: string;
+    email: string;
 }
 
-export interface Disponivel {
-    codigo: string;
-    descricao: string;
-    valorPadrao: number;
+export interface Orcamento {
+    id?: string;
+    numero?: string;
+    data: string;
+    cliente: Cliente;
+    itens: Item[];
+    valorTotal: number;
+    observacoes?: string;
+    status: OrcamentoStatus;
 }
 
-export interface ServicoDisponivel extends Disponivel { }
-export interface MaterialDisponivel extends Disponivel { }
-
-export type ProdutoDisponivel = ServicoDisponivel | MaterialDisponivel;
-
-export interface ProdutoAdicionado {
-    id: number;
-    tipo: TipoProduto;
-    codigo: string;
+export interface Item {
+    id: string;
     descricao: string;
     quantidade: number;
     valorUnitario: number;
     valorTotal: number;
 }
 
-export interface Totais {
-    subtotal: number;
-    desconto: number;
-    total: number;
-}
+export type OrcamentoStatus = 'rascunho' | 'enviado' | 'aprovado' | 'rejeitado';
