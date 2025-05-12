@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard de Medição - Nota Modelo 21</title>
+    <style>
+        :root {
+            --dark-blue: #0a2647;
+            --medium-blue: #144272;
+            --light-blue: #205295;
+            --accent-blue: #2c74b3;
+            --highlight: #5499c7;
+            --text-light: #e6f2ff;
+            --text-dark: #102a43;
+            --complete: #2ecc71;
+            --incomplete: #e74c3c;
+            --in-progress: #f39c12;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--dark-blue);
+            color: var(--text-light);
+            margin: 0;
+            padding: 0;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .header {
+            background-color: var(--medium-blue);
+            padding: 15px 20px;
+            border-radius: 10px 10px 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .header h1 {
+            margin: 0;
+            font-size: 24px;
+            font-weight: 500;
+        }
+
+        .companies {
+            background-color: var(--light-blue);
+            padding: 10px 20px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        .company {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .company-label {
+            font-size: 12px;
+            opacity: 0.8;
+        }
+        
+        .company-name {
+            font-weight: 500;
+            font-size: 16px;
+        }
+        
+        .progress-overview {
+            background-color: var(--light-blue);
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .progress-bar-container {
+            height: 20px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            margin: 15px 0;
+            overflow: hidden;
+        }
+        
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent-blue), var(--highlight));
+            border-radius: 10px;
+            width: 30%;
+            transition: width 1s ease;
+            position: relative;
+        }
+        
+        .progress-text {
+            text-align: right;
+            font-weight: 500;
+            margin-top: 5px;
+        }
+        
+        .status-summary {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+        
+        .status-card {
+            background-color: var(--medium-blue);
+            padding: 15px;
+            border-radius: 8px;
+            flex: 1;
+            margin: 0 10px;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .status-card:first-child {
+            margin-left: 0;
+        }
+        
+        .status-card:last-child {
+            margin-right: 0;
+        }
+        
+        .status-card h3 {
+            margin-top: 0;
+            margin-bottom: 10px;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-light);
+            opacity: 0.8;
+        }
+        
+        .status-card p {
+            margin: 0;
+            font-size: 24px;
+            font-weight: 700;
+        }
+        
+        .task-list {
+            background-color: var(--medium-blue);
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .task-list-header {
+            display: grid;
+            grid-template-columns: 40px 3fr 1fr 1fr;
+            background-color: var(--light-blue);
+            padding: 12px 15px;
+            font-weight: 500;
+            font-size: 14px;
+        }
+        
+        .task-row {
+            display: grid;
+            grid-template-columns: 40px 3fr 1fr 1fr;
+            padding: 12px 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 14px;
+            align-items: center;
+        }
+        
+        .task-row:last-child {
+            border-bottom: none;
+        }
+        
+        .task-row:hover {
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+        
+        .task-status {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            margin: 0 auto;
+        }
+        
+        .complete {
+            background-color: var(--complete);
+        }
+        
+        .in-progress {
+            background-color: var(--in-progress);
+        }
+        
+        .incomplete {
+            background-color: var(--incomplete);
+        }
+        
+        .task-name {
+            font-weight: 500;
+        }
+        
+        .task-name.parent {
+            font-weight: 600;
+        }
+        
+        .task-name.child {
+            padding-left: 20px;
+            opacity: 0.9;
+        }
+        
+        .task-duration, .task-completion {
+            text-align: center;
+        }
+        
+        .task-completion-bar {
+            width: 80%;
+            height: 8px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            margin: 0 auto;
+            overflow: hidden;
+        }
+        
+        .task-completion-progress {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent-blue), var(--highlight));
+            border-radius: 4px;
+        }
+        
+        .footer {
+            margin-top: 25px;
+            text-align: center;
+            font-size: 12px;
+            color: var(--text-light);
+            opacity: 0.6;
+        }
+        
+        .badge {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+            margin-left: 5px;
+        }
+        
+        .badge-complete {
+            background-color: var(--complete);
+            color: var(--text-dark);
+        }
+        
+        .badge-in-progress {
+            background-color: var(--in-progress);
+            color: var(--text-dark);
+        }
+        
+        .badge-incomplete {
+            background-color: var(--incomplete);
+            color: var(--text-light);
+        }
+        
+        .pendencies {
+            background-color: var(--light-blue);
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .pendencies h2 {
+            margin-top: 0;
+            margin-bottom: 15px;
+        }
+        
+        .pendencies ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+        
+        .pendencies li {
+            margin-bottom: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Dashboard de Medição - Nota Modelo 21</h1>
+            <span>09/05/2025</span>
+        </div>
+        
+        <div class="companies">
+            <div class="company">
+                <span class="company-label">Empresa Executora</span>
+                <span class="company-name">Zyra Tecnologia</span>
+            </div>
+            <div class="company">
+                <span class="company-label">Empresa Contratante</span>
+                <span class="company-name">Integrance Contabilidade e Finanças</span>
+            </div>
+        </div>
+        
+        <div class="progress-overview">
+            <h2>Progresso Geral</h2>
+            <div class="progress-bar-container">
+                <div class="progress-bar"></div>
+            </div>
+            <div class="progress-text">30% Concluído</div>
+        </div>
+        
+        <div class="status-summary">
+            <div class="status-card">
+                <h3>Tarefas Totais</h3>
+                <p>16</p>
+            </div>
+            <div class="status-card">
+                <h3>Concluídas</h3>
+                <p>2</p>
+            </div>
+            <div class="status-card">
+                <h3>Em Andamento</h3>
+                <p>2</p>
+            </div>
+            <div class="status-card">
+                <h3>Horas Totais</h3>
+                <p>70h</p>
+            </div>
+        </div>
+        
+        <div class="task-list">
+            <div class="task-list-header">
+                <div>Status</div>
+                <div>Tarefa</div>
+                <div>Duração</div>
+                <div>Progresso</div>
+            </div>
+            
+            <!-- Nota Modelo 21 -->
+            <div class="task-row">
+                <div><div class="task-status in-progress"></div></div>
+                <div class="task-name parent">Nota Modelo 21</div>
+                <div class="task-duration">70h</div>
+                <div class="task-completion">
+                    <div class="task-completion-bar">
+                        <div class="task-completion-progress" style="width: 30%;"></div>
+                    </div>
+                    30%
+                </div>
+            </div>
+            
+            <!-- Análise -->
+            <div class="task-row">
+                <div><div class="task-status complete"></div></div>
+                <div class="task-name parent">Análise</div>
+                <div class="task-duration">2h</div>
+                <div class="task-completion">
+                    <div class="task-completion-bar">
+                        <div class="task-completion-progress" style="width: 100%;"></div>
+                    </div>
+                    100%
+                </div>
+            </div>
+            
+            <!-- Levantamento de Requisitos -->
+            <div class="task-row">
+                <div><div class="task-status complete"></div></div>
+                <div class="task-name child">Levantamento de Requisitos</div>
+                <div class="task-duration">2h</div>
+                <div class="task-completion">
+                    <div class="task-completion-bar">
+                        <div class="task-completion-progress" style="width: 100%;"></div>
+                    </div>
+                    100%
+                </div>
+            </div>
+            
+            <!-- Desenvolvimento -->
+            <div class="task-row">
+                <div><div class="task-status in-progress"></div></div>
+                <div class="task-name parent">Desenvolvimento</div>
+                <div class="task-duration">55h</div>
+                <div class="task-completion">
+                    <div class="task-completion-bar">
+                        <div class="task-completion-progress" style="width: 33%;"></div>
+                    </div>
+                    33%
+                </div>
+            </div>
+            
+            <!-- Atualização do sistema -->
+            <div class="task-row">
+                <div><div class="task-status complete"></div></div>
+                <div class="task-name child">Atualização do sistema</div>
+                <div class="task-duration">2h</div>
+                <div class="task-completion">
+                    <div class="task-completion-bar">
+                        <div class="task-completion-progress" style="width: 100%;"></div>
+                    </div>
+                    100%
+                </div>
+            </div>
+            
+            <!-- Configuração dos parâmetros -->
+            <div class="task-row">
+                <div><div class="task-status in-progress"></div></div>
+                <div class="task-name child">Configuração dos parâmetros e rotina</div>
+                <div class="task-duration">19h</div>
+                <div class="task-completion">
+                    <div class="task-completion-bar">
+                        <div class="task-completion-progress" style="width: 60%;"></div>
+                    </div>
+                    60%
+                </div>
+            </div>
+            
+            <!-- Configuração da TES -->
+            <div class="task-row">
+                <div><div class="task-status incomplete"></div></div>
+                <div class="task-name child">Configuração da TES</div>
+                <div class="task-duration">2h</div>
+                <div class="task-completion">
+                    <div class="task-completion-bar">
+                        <div class="task-completion-progress" style="width: 0%;"></div>
+                    </div>
+                    0%
+                </div>
+            </div>
+            
+            <!-- Impressão da nota -->
+            <div class="task-row">
+                <div><div class="task-status in-progress"></div></div>
+                <div class="task-name child">Impressão da nota</div>
+                <div class="task-duration">25h</div>
+                <div class="task-completion">
+                    <div class="task-completion-bar">
+                        <div class="task-completion-progress" style="width: 20%;"></div>
+                    </div>
+                    20%
+                </div>
+            </div>
+            
+            <!-- Configuração da contabilização -->
+            <div class="task-row">
+                <div><div class="task-status incomplete"></div></div>
+                <div class="task-name child">Configuração da contabilização</div>
+                <div class="task-duration">5h</div>
+                <div class="task-completion">
+                    <div class="task-completion-bar">
+                        <div class="task-completion-progress" style="width: 0%;"></div>
+                    </div>
+                    0%
+                </div>
+            </div>
+            
+            <!-- Conferência da apuração -->
+            <div class="task-row">
+                <div><div class="task-status incomplete"></div></div>
+                <div class="task-name child">Conferência da apuração dos impostos</div>
+                <div class="task-duration">4h</div>
+                <div class="task-completion">
+                    <div class="task-completion-bar">
+                        <div class="task-completion-progress" style="width: 0%;"></div>
+                    </div>
+                    0%
+                </div>
+            </div>
+            
+            <!-- Conclusão -->
+            <div class="task-row">
+                <div><div class="task-status incomplete"></div></div>
+                <div class="task-name parent">Conclusão</div>
+                <div class="task-duration">13h</div>
+                <div class="task-completion">
+                    <div class="task-completion-bar">
+                        <div class="task-completion-progress" style="width: 0%;"></div>
+                    </div>
+                    0%
+                </div>
+            </div>
+            
+            <!-- Teste emissão da nota fiscal -->
+            <div class="task-row">
+                <div><div class="task-status incomplete"></div></div>
+                <div class="task-name child">Teste emissão da nota fiscal</div>
+                <div class="task-duration">4h</div>
+                <div class="task-completion">
+                    <div class="task-completion-bar">
+                        <div class="task-completion-progress" style="width: 0%;"></div>
+                    </div>
+                    0%
+                </div>
+            </div>
+            
+            <!-- Validação da impressão -->
+            <div class="task-row">
+                <div><div class="task-status incomplete"></div></div>
+                <div class="task-name child">Validação da impressão e layout</div>
+                <div class="task-duration">4h</div>
+                <div class="task-completion">
+                    <div class="task-completion-bar">
+                        <div class="task-completion-progress" style="width: 0%;"></div>
+                    </div>
+                    0%
+                </div>
+            </div>
+            
+            <!-- Correções de bugs -->
+            <div class="task-row">
+                <div><div class="task-status incomplete"></div></div>
+                <div class="task-name child">Correções de bugs</div>
+                <div class="task-duration">2h</div>
+                <div class="task-completion">
+                    <div class="task-completion-bar">
+                        <div class="task-completion-progress" style="width: 0%;"></div>
+                    </div>
+                    0%
+                </div>
+            </div>
+            
+            <!-- Validação integração contábil -->
+            <div class="task-row">
+                <div><div class="task-status incomplete"></div></div>
+                <div class="task-name child">Validação integração contábil</div>
+                <div class="task-duration">1h</div>
+                <div class="task-completion">
+                    <div class="task-completion-bar">
+                        <div class="task-completion-progress" style="width: 0%;"></div>
+                    </div>
+                    0%
+                </div>
+            </div>
+            
+            <!-- Validação integração financeira -->
+            <div class="task-row">
+                <div><div class="task-status incomplete"></div></div>
+                <div class="task-name child">Validação integração financeira</div>
+                <div class="task-duration">1h</div>
+                <div class="task-completion">
+                    <div class="task-completion-bar">
+                        <div class="task-completion-progress" style="width: 0%;"></div>
+                    </div>
+                    0%
+                </div>
+            </div>
+            
+            <!-- Go Live -->
+            <div class="task-row">
+                <div><div class="task-status incomplete"></div></div>
+                <div class="task-name child">Go Live</div>
+                <div class="task-duration">1h</div>
+                <div class="task-completion">
+                    <div class="task-completion-bar">
+                        <div class="task-completion-progress" style="width: 0%;"></div>
+                    </div>
+                    0%
+                </div>
+            </div>
+        </div>
+        
+        <div class="pendencies">
+            <h2>Pendências</h2>
+            <ul>
+                <li>Finalizar configuração dos parâmetros e rotina</li>
+                <li>Configuração da TES</li>
+                <li>Finalizar implementação da impressão da nota</li>
+                <li>Configuração da contabilização</li>
+                <li>Conferência da apuração dos impostos</li>
+                <li>Teste emissão da nota fiscal</li>
+                <li>Validação da impressão e layout</li>
+                <li>Correções de bugs</li>
+                <li>Validação das integrações (contábil e financeira)</li>
+                <li>Go Live</li>
+            </ul>
+        </div>
+        
+        <div class="footer">
+            <p>Última atualização: 09/05/2025 às 10:35 | Zyra Tecnologia</p>
+        </div>
+    </div>
+</body>
+</html>

@@ -8,6 +8,8 @@ const Login = lazy(() => import("../pages/Login"));
 const Home = lazy(() => import("../pages/Home"));
 const Orcamento = lazy(() => import("../pages/Orcamento/Orcamento"));
 const FuncionariosRoutes = lazy(() => import("./FuncionariosRoutes"));
+const Medicao = lazy(() => import("../pages/Medicao/Medicao"));
+
 
 /**
  * Componente que define as rotas principais da aplicação.
@@ -47,6 +49,26 @@ const AppRoutes: React.FC = () => {
                             <PrivateRoute>
                                 <MainLayout>
                                     <FuncionariosRoutes />
+                                </MainLayout>
+                            </PrivateRoute>
+                        }
+                    />
+                    <Route
+                        path="/funcionarios/*"
+                        element={
+                            <PrivateRoute>
+                                <MainLayout>
+                                    <FuncionariosRoutes />
+                                </MainLayout>
+                            </PrivateRoute>
+                        }
+                    />
+                    <Route
+                        path="/medicao"
+                        element={
+                            <PrivateRoute>
+                                <MainLayout>
+                                    <Medicao />
                                 </MainLayout>
                             </PrivateRoute>
                         }

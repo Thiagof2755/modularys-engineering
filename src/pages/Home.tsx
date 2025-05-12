@@ -251,10 +251,10 @@ const Home = () => {
         },
         {
             id: 5,
-            title: 'Relatórios',
-            description: 'Geração de relatórios e análises',
+            title: 'Medicao',
+            description: 'Geração de Medicao e análises',
             icon: '📋',
-            path: '/relatorios',
+            path: '/medicao',
             color: '#9b59b6'
         }
     ];

@@ -1,0 +1,159 @@
+{
+    "dashboard_info": {
+        "title": "Dashboard de Medição - Nota Modelo 21",
+        "date": "09/05/2025",
+        "last_update": "09/05/2025 às 10:35"
+    },
+    "companies": {
+        "executing_company": "Zyra Tecnologia",
+        "contracting_company": "Integrance Contabilidade e Finanças"
+    },
+    "progress_overview": {
+        "total_progress_percentage": 30,
+        "total_tasks": 16,
+        "completed_tasks": 2,
+        "in_progress_tasks": 2,
+        "total_hours": 70
+    },
+    "tasks": [
+        {
+            "name": "Nota Modelo 21",
+            "type": "parent",
+            "status": "in_progress",
+            "duration_hours": 70,
+            "completion_percentage": 30,
+            "subtasks": [
+                {
+                    "name": "Análise",
+                    "type": "parent",
+                    "status": "complete",
+                    "duration_hours": 2,
+                    "completion_percentage": 100,
+                    "subtasks": [
+                        {
+                            "name": "Levantamento de Requisitos",
+                            "type": "child",
+                            "status": "complete",
+                            "duration_hours": 2,
+                            "completion_percentage": 100
+                        }
+                    ]
+                },
+                {
+                    "name": "Desenvolvimento",
+                    "type": "parent",
+                    "status": "in_progress",
+                    "duration_hours": 55,
+                    "completion_percentage": 33,
+                    "subtasks": [
+                        {
+                            "name": "Atualização do sistema",
+                            "type": "child",
+                            "status": "complete",
+                            "duration_hours": 2,
+                            "completion_percentage": 100
+                        },
+                        {
+                            "name": "Configuração dos parâmetros e rotina",
+                            "type": "child",
+                            "status": "in_progress",
+                            "duration_hours": 19,
+                            "completion_percentage": 60
+                        },
+                        {
+                            "name": "Configuração da TES",
+                            "type": "child",
+                            "status": "incomplete",
+                            "duration_hours": 2,
+                            "completion_percentage": 0
+                        },
+                        {
+                            "name": "Impressão da nota",
+                            "type": "child",
+                            "status": "in_progress",
+                            "duration_hours": 25,
+                            "completion_percentage": 20
+                        },
+                        {
+                            "name": "Configuração da contabilização",
+                            "type": "child",
+                            "status": "incomplete",
+                            "duration_hours": 5,
+                            "completion_percentage": 0
+                        },
+                        {
+                            "name": "Conferência da apuração dos impostos",
+                            "type": "child",
+                            "status": "incomplete",
+                            "duration_hours": 4,
+                            "completion_percentage": 0
+                        }
+                    ]
+                },
+                {
+                    "name": "Conclusão",
+                    "type": "parent",
+                    "status": "incomplete",
+                    "duration_hours": 13,
+                    "completion_percentage": 0,
+                    "subtasks": [
+                        {
+                            "name": "Teste emissão da nota fiscal",
+                            "type": "child",
+                            "status": "incomplete",
+                            "duration_hours": 4,
+                            "completion_percentage": 0
+                        },
+                        {
+                            "name": "Validação da impressão e layout",
+                            "type": "child",
+                            "status": "incomplete",
+                            "duration_hours": 4,
+                            "completion_percentage": 0
+                        },
+                        {
+                            "name": "Correções de bugs",
+                            "type": "child",
+                            "status": "incomplete",
+                            "duration_hours": 2,
+                            "completion_percentage": 0
+                        },
+                        {
+                            "name": "Validação integração contábil",
+                            "type": "child",
+                            "status": "incomplete",
+                            "duration_hours": 1,
+                            "completion_percentage": 0
+                        },
+                        {
+                            "name": "Validação integração financeira",
+                            "type": "child",
+                            "status": "incomplete",
+                            "duration_hours": 1,
+                            "completion_percentage": 0
+                        },
+                        {
+                            "name": "Go Live",
+                            "type": "child",
+                            "status": "incomplete",
+                            "duration_hours": 1,
+                            "completion_percentage": 0
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "pendencies": [
+        "Finalizar configuração dos parâmetros e rotina",
+        "Configuração da TES",
+        "Finalizar implementação da impressão da nota",
+        "Configuração da contabilização",
+        "Conferência da apuração dos impostos",
+        "Teste emissão da nota fiscal",
+        "Validação da impressão e layout",
+        "Correções de bugs",
+        "Validação das integrações (contábil e financeira)",
+        "Go Live"
+    ]
+}
