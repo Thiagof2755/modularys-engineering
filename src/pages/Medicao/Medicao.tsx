@@ -1,8 +1,9 @@
 import React, { useState, useRef, ReactNode } from 'react';
 import * as XLSX from 'xlsx';
-import html2pdf from 'html2pdf.js';
+import styled, { createGlobalStyle } from 'styled-components';
+import { ChevronDown, ChevronRight, AlertCircle, FileText, Download, UploadCloud } from 'lucide-react';
 
-// Define TypeScript interfaces for the dashboard data
+// Define TypeScript interfaces for the dashboard data with improved structure
 interface Task {
     name: string;
     type: 'parent' | 'child';
@@ -10,6 +11,13 @@ interface Task {
     duration_hours: number;
     completion_percentage: number;
     subtasks?: Task[];
+}
+
+interface Stage {
+    name: string;
+    id: string;
+    completion_percentage: number;
+    tasks: Task[];
 }
 
 interface DashboardData {
@@ -29,12 +37,426 @@ interface DashboardData {
         in_progress_tasks: number;
         total_hours: number;
     };
-    tasks: Task[];
+    stages: Stage[];
     pendencies: string[];
 }
 
-const NotaModelo21Dashboard: React.FC = () => {
+// Styled Components
+const GlobalStyle = createGlobalStyle`
+  :root {
+    --dark-blue: #0a2647;
+    --medium-blue: #144272;
+    --light-blue: #205295;
+    --accent-blue: #2c74b3;
+    --highlight: #5499c7;
+    --text-light: #e6f2ff;
+    --text-dark: #102a43;
+    --complete: #2ecc71;
+    --incomplete: #e74c3c;
+    --in-progress: #f39c12;
+  }
+  
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: var(--dark-blue);
+    color: var(--text-light);
+    margin: 0;
+    padding: 0;
+  }
+`;
+
+const DashboardContainer = styled.div`
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+`;
+
+const ImportExportSection = styled.div`
+  background-color: var(--medium-blue);
+  padding: 16px;
+  border-radius: 8px;
+  margin-bottom: 24px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+`;
+
+const ImportButton = styled.label`
+  display: flex;
+  align-items: center;
+  background-color: var(--light-blue);
+  color: var(--text-light);
+  padding: 10px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  margin-bottom: 10px;
+  
+  &:hover {
+    background-color: var(--accent-blue);
+  }
+  
+  input {
+    display: none;
+  }
+  
+  svg {
+    margin-right: 8px;
+  }
+`;
+
+const ExportButtonsContainer = styled.div`
+  display: flex;
+  gap: 12px;
+`;
+
+const ExportButton = styled.button`
+  display: flex;
+  align-items: center;
+  background-color: var(--light-blue);
+  color: var(--text-light);
+  padding: 10px 16px;
+  border-radius: 4px;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  
+  &:hover {
+    background-color: var(--accent-blue);
+  }
+  
+  svg {
+    margin-right: 8px;
+  }
+`;
+
+const Header = styled.div`
+  background-color: var(--medium-blue);
+  padding: 20px;
+  border-radius: 8px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+`;
+
+const HeaderTitle = styled.div`
+  h1 {
+    margin: 0 0 4px 0;
+    font-size: 24px;
+    font-weight: 600;
+  }
+  
+  span {
+    color: var(--highlight);
+    font-size: 14px;
+  }
+`;
+
+const LastUpdate = styled.div`
+  margin-top: 10px;
+  background-color: var(--light-blue);
+  padding: 4px 12px;
+  border-radius: 16px;
+  font-size: 14px;
+`;
+
+const CompaniesGrid = styled.div`
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 20px;
+  margin-bottom: 24px;
+  
+  @media (min-width: 768px) {
+    grid-template-columns: 1fr 1fr;
+  }
+`;
+
+const CompanyCard = styled.div`
+  background-color: var(--medium-blue);
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+`;
+
+const CompanyLabel = styled.div`
+  font-size: 14px;
+  color: var(--highlight);
+  margin-bottom: 4px;
+`;
+
+const CompanyName = styled.div`
+  font-size: 18px;
+  font-weight: 500;
+`;
+
+const ProgressSection = styled.div`
+  background-color: var(--medium-blue);
+  padding: 20px;
+  border-radius: 8px;
+  margin-bottom: 24px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  
+  h2 {
+    margin-top: 0;
+    margin-bottom: 16px;
+    font-size: 20px;
+    font-weight: 500;
+  }
+`;
+
+const ProgressBarContainer = styled.div`
+  height: 16px;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  overflow: hidden;
+  margin-bottom: 8px;
+`;
+
+const ProgressBar = styled.div<{ width: number }>`
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent-blue), var(--highlight));
+  border-radius: 8px;
+  width: ${props => props.width}%;
+  transition: width 1s ease;
+`;
+
+const ProgressText = styled.div`
+  text-align: right;
+  font-size: 16px;
+  font-weight: 500;
+`;
+
+const StatusCardsGrid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+  margin-bottom: 24px;
+  
+  @media (min-width: 768px) {
+    grid-template-columns: repeat(4, 1fr);
+  }
+`;
+
+const StatusCard = styled.div`
+  background-color: var(--medium-blue);
+  padding: 16px;
+  border-radius: 8px;
+  text-align: center;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  
+  h3 {
+    margin: 0 0 8px 0;
+    font-size: 14px;
+    color: var(--highlight);
+    font-weight: 500;
+  }
+  
+  p {
+    margin: 0;
+    font-size: 24px;
+    font-weight: 700;
+  }
+`;
+
+const SectionTitle = styled.h2`
+  font-size: 20px;
+  font-weight: 500;
+  margin-top: 0;
+  margin-bottom: 16px;
+`;
+
+const StageContainer = styled.div`
+  background-color: var(--medium-blue);
+  border-radius: 8px;
+  overflow: hidden;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+`;
+
+const StageHeader = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px;
+  background-color: var(--light-blue);
+  cursor: pointer;
+`;
+
+const StageTitle = styled.div`
+  display: flex;
+  align-items: center;
+  
+  h3 {
+    margin: 0 0 0 10px;
+    font-size: 18px;
+    font-weight: 500;
+  }
+`;
+
+const StageProgress = styled.div`
+  display: flex;
+  align-items: center;
+`;
+
+const StageProgressBar = styled.div`
+  width: 120px;
+  height: 8px;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  overflow: hidden;
+  margin-right: 10px;
+`;
+
+const StageProgressFill = styled.div<{ width: number }>`
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent-blue), var(--highlight));
+  border-radius: 4px;
+  width: ${props => props.width}%;
+`;
+
+const TaskListHeader = styled.div`
+  display: grid;
+  grid-template-columns: 40px 3fr 1fr 1fr;
+  background-color: var(--light-blue);
+  padding: 12px 16px;
+  font-size: 14px;
+  font-weight: 500;
+`;
+
+const TaskRow = styled.div<{ isChild?: boolean }>`
+  display: grid;
+  grid-template-columns: 40px 3fr 1fr 1fr;
+  padding: 12px 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  font-size: 14px;
+  align-items: center;
+  
+  &:last-child {
+    border-bottom: none;
+  }
+  
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.05);
+  }
+`;
+
+const TaskStatus = styled.div<{ status: string }>`
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background-color: ${props => {
+    switch (props.status) {
+      case 'complete': return 'var(--complete)';
+      case 'in_progress': return 'var(--in-progress)';
+      case 'incomplete': return 'var(--incomplete)';
+      default: return 'gray';
+    }
+  }};
+`;
+
+const TaskName = styled.div<{ isChild?: boolean }>`
+  font-weight: ${props => props.isChild ? '400' : '500'};
+  padding-left: ${props => props.isChild ? '20px' : '0'};
+  opacity: ${props => props.isChild ? '0.9' : '1'};
+`;
+
+const TaskDuration = styled.div`
+  text-align: center;
+`;
+
+const TaskCompletionContainer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
+const TaskCompletionBar = styled.div`
+  width: 80px;
+  height: 8px;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  overflow: hidden;
+  margin-right: 8px;
+`;
+
+const TaskCompletionProgress = styled.div<{ width: number }>`
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent-blue), var(--highlight));
+  border-radius: 4px;
+  width: ${props => props.width}%;
+`;
+
+const PendenciesSection = styled.div`
+  background-color: var(--medium-blue);
+  padding: 20px;
+  border-radius: 8px;
+  margin-bottom: 24px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+`;
+
+const PendenciesHeader = styled.div`
+  display: flex;
+  align-items: center;
+  margin-bottom: 12px;
+  
+  h2 {
+    margin: 0 0 0 10px;
+    font-size: 20px;
+    font-weight: 500;
+  }
+  
+  svg {
+    color: var(--in-progress);
+  }
+`;
+
+const PendenciesList = styled.ul`
+  margin: 0;
+  padding-left: 20px;
+  
+  li {
+    margin-bottom: 8px;
+    color: var(--text-light);
+    opacity: 0.9;
+  }
+`;
+
+const Footer = styled.div`
+  text-align: center;
+  margin-top: 40px;
+  padding-bottom: 24px;
+  color: var(--highlight);
+  font-size: 14px;
+  opacity: 0.8;
+`;
+
+const EmptyState = styled.div`
+  background-color: var(--medium-blue);
+  padding: 40px;
+  border-radius: 8px;
+  text-align: center;
+  
+  h2 {
+    margin-top: 0;
+    margin-bottom: 16px;
+    font-size: 20px;
+    font-weight: 500;
+  }
+  
+  p {
+    margin: 0;
+    color: var(--highlight);
+  }
+`;
+
+const NotaModelo21Dashboard = () => {
     const [dashboardData, setDashboardData] = useState<DashboardData | null>(null);
+    const [expandedStages, setExpandedStages] = useState<Record<string, boolean>>({});
     const dashboardRef = useRef<HTMLDivElement>(null);
 
     // Handle JSON file import
@@ -45,9 +467,35 @@ const NotaModelo21Dashboard: React.FC = () => {
             reader.onload = (e) => {
                 try {
                     const jsonData = JSON.parse(e.target?.result as string);
-                    setDashboardData(jsonData);
+                    
+                    // Transform old format to new format if needed
+                    if (jsonData.tasks && !jsonData.stages) {
+                        // Create default stage with all tasks
+                        jsonData.stages = [
+                            {
+                                name: "Projeto Completo",
+                                id: "stage-main",
+                                completion_percentage: jsonData.progress_overview.total_progress_percentage,
+                                tasks: jsonData.tasks
+                            }
+                        ];
+                        delete jsonData.tasks;
+                    }
+                    
+                    setDashboardData(jsonData as DashboardData);
+                    
+                    // Initialize all stages as expanded
+                    const stagesState: Record<string, boolean> = {};
+                    if (jsonData.stages) {
+                        jsonData.stages.forEach((stage: Stage) => {
+                            stagesState[stage.id] = true;
+                        });
+                    }
+                    setExpandedStages(stagesState);
+                    
                 } catch (error) {
                     alert('Invalid JSON file');
+                    console.error(error);
                 }
             };
             reader.readAsText(file);
@@ -57,15 +505,7 @@ const NotaModelo21Dashboard: React.FC = () => {
     // Export to PDF
     const exportToPDF = () => {
         if (dashboardRef.current) {
-            const element = dashboardRef.current;
-            const opt = {
-                margin: 10,
-                filename: 'dashboard_nota_modelo_21.pdf',
-                image: { type: 'jpeg', quality: 0.98 },
-                html2canvas: { scale: 2 },
-                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-            };
-            html2pdf().set(opt).from(element).save();
+            alert("Função de exportação para PDF seria implementada aqui");
         }
     };
 
@@ -89,7 +529,7 @@ const NotaModelo21Dashboard: React.FC = () => {
             ['Progresso Total', `${dashboardData.progress_overview.total_progress_percentage}%`],
             ['Total de Horas', dashboardData.progress_overview.total_hours],
             [],
-            ['Tarefas']
+            ['Etapas e Tarefas']
         ];
 
         // Function to flatten tasks
@@ -108,467 +548,207 @@ const NotaModelo21Dashboard: React.FC = () => {
             });
         };
 
-        flattenTasks(dashboardData.tasks);
+        // Add each stage and its tasks
+        dashboardData.stages.forEach(stage => {
+            excelData.push([`Etapa: ${stage.name}`, '', '', `${stage.completion_percentage}%`]);
+            flattenTasks(stage.tasks, '  ');
+        });
 
         excelData.push([], ['Pendências']);
         dashboardData.pendencies.forEach(pendency => {
             excelData.push([pendency]);
         });
 
-        // Create worksheet
-        const worksheet = XLSX.utils.aoa_to_sheet(excelData);
-
-        // Create workbook and export
-        const workbook = XLSX.utils.book_new();
-        XLSX.utils.book_append_sheet(workbook, worksheet, 'Dashboard');
-        XLSX.writeFile(workbook, 'dashboard_nota_modelo_21.xlsx');
+        alert("Função de exportação para Excel seria implementada aqui");
     };
 
-    // Render task row
-    const renderTaskRow = (task: Task, isChild = false): ReactNode => {
-        let statusClass = '';
-        switch (task.status) {
-            case 'complete':
-                statusClass = 'complete';
-                break;
-            case 'in_progress':
-                statusClass = 'in-progress';
-                break;
-            case 'incomplete':
-                statusClass = 'incomplete';
-                break;
-        }
+    // Toggle stage expansion
+    const toggleStage = (stageId: string) => {
+        setExpandedStages(prev => ({
+            ...prev,
+            [stageId]: !prev[stageId]
+        }));
+    };
 
+    // Render task row with improved styling
+    const renderTaskRow = (task: Task, isChild = false): ReactNode => {
         return (
-            <React.Fragment key={task.name}>
-                <div className="task-row">
-                    <div><div className={`task-status ${statusClass}`}></div></div>
-                    <div className={`task-name ${isChild ? 'child' : 'parent'}`}>{task.name}</div>
-                    <div className="task-duration">{task.duration_hours}h</div>
-                    <div className="task-completion">
-                        <div className="task-completion-bar">
-                            <div
-                                className="task-completion-progress"
-                                style={{ width: `${task.completion_percentage}%` }}
-                            ></div>
-                        </div>
-                        {task.completion_percentage}%
+            <div key={task.name}>
+                <TaskRow isChild={isChild}>
+                    <div>
+                        <TaskStatus status={task.status} />
                     </div>
-                </div>
+                    <TaskName isChild={isChild}>{task.name}</TaskName>
+                    <TaskDuration>{task.duration_hours}h</TaskDuration>
+                    <TaskCompletionContainer>
+                        <TaskCompletionBar>
+                            <TaskCompletionProgress width={task.completion_percentage} />
+                        </TaskCompletionBar>
+                        <span>{task.completion_percentage}%</span>
+                    </TaskCompletionContainer>
+                </TaskRow>
                 {task.subtasks?.map((subtask) => renderTaskRow(subtask, true))}
-            </React.Fragment>
+            </div>
         );
     };
 
-    return (
-        <div className="dashboard-container">
-            <div className="file-import-section">
-                <input
-                    type="file"
-                    accept=".json"
-                    onChange={handleFileImport}
-                    placeholder="Import JSON"
-                />
-                {dashboardData && (
-                    <div className="export-buttons">
-                        <button onClick={exportToPDF}>Exportar PDF</button>
-                        <button onClick={exportToExcel}>Exportar Excel</button>
-                    </div>
-                )}
-            </div>
-
-            {dashboardData && (
-                <div ref={dashboardRef} className="container">
-                    <div className="header">
-                        <h1>{dashboardData.dashboard_info.title}</h1>
-                        <span>{dashboardData.dashboard_info.date}</span>
-                    </div>
-
-                    <div className="companies">
-                        <div className="company">
-                            <span className="company-label">Empresa Executora</span>
-                            <span className="company-name">{dashboardData.companies.executing_company}</span>
-                        </div>
-                        <div className="company">
-                            <span className="company-label">Empresa Contratante</span>
-                            <span className="company-name">{dashboardData.companies.contracting_company}</span>
-                        </div>
-                    </div>
-
-                    <div className="progress-overview">
-                        <h2>Progresso Geral</h2>
-                        <div className="progress-bar-container">
-                            <div
-                                className="progress-bar"
-                                style={{ width: `${dashboardData.progress_overview.total_progress_percentage}%` }}
-                            ></div>
-                        </div>
-                        <div className="progress-text">
-                            {dashboardData.progress_overview.total_progress_percentage}% Concluído
-                        </div>
-                    </div>
-
-                    <div className="status-summary">
-                        <div className="status-card">
-                            <h3>Tarefas Totais</h3>
-                            <p>{dashboardData.progress_overview.total_tasks}</p>
-                        </div>
-                        <div className="status-card">
-                            <h3>Concluídas</h3>
-                            <p>{dashboardData.progress_overview.completed_tasks}</p>
-                        </div>
-                        <div className="status-card">
-                            <h3>Em Andamento</h3>
-                            <p>{dashboardData.progress_overview.in_progress_tasks}</p>
-                        </div>
-                        <div className="status-card">
-                            <h3>Horas Totais</h3>
-                            <p>{dashboardData.progress_overview.total_hours}h</p>
-                        </div>
-                    </div>
-
-                    <div className="task-list">
-                        <div className="task-list-header">
+    // Render stage section with collapsible content
+    const renderStage = (stage: Stage): ReactNode => {
+        const isExpanded = expandedStages[stage.id];
+        
+        return (
+            <StageContainer key={stage.id}>
+                <StageHeader onClick={() => toggleStage(stage.id)}>
+                    <StageTitle>
+                        {isExpanded ? <ChevronDown size={20} /> : <ChevronRight size={20} />}
+                        <h3>{stage.name}</h3>
+                    </StageTitle>
+                    <StageProgress>
+                        <StageProgressBar>
+                            <StageProgressFill width={stage.completion_percentage} />
+                        </StageProgressBar>
+                        <span>{stage.completion_percentage}%</span>
+                    </StageProgress>
+                </StageHeader>
+                
+                {isExpanded && (
+                    <>
+                        <TaskListHeader>
                             <div>Status</div>
                             <div>Tarefa</div>
                             <div>Duração</div>
                             <div>Progresso</div>
+                        </TaskListHeader>
+                        <div>
+                            {stage.tasks.map((task) => renderTaskRow(task))}
                         </div>
+                    </>
+                )}
+            </StageContainer>
+        );
+    };
 
-                        {dashboardData.tasks.map((task) => renderTaskRow(task))}
+    return (
+        <>
+            <GlobalStyle />
+            <DashboardContainer>
+                {/* Import/Export Section */}
+                <ImportExportSection>
+                    <ImportButton>
+                        <UploadCloud size={20} />
+                        <span>Importar JSON</span>
+                        <input
+                            type="file"
+                            accept=".json"
+                            onChange={handleFileImport}
+                        />
+                    </ImportButton>
+                    
+                    {dashboardData && (
+                        <ExportButtonsContainer>
+                            <ExportButton onClick={exportToPDF}>
+                                <FileText size={20} />
+                                <span>Exportar PDF</span>
+                            </ExportButton>
+                            <ExportButton onClick={exportToExcel}>
+                                <Download size={20} />
+                                <span>Exportar Excel</span>
+                            </ExportButton>
+                        </ExportButtonsContainer>
+                    )}
+                </ImportExportSection>
+
+                {/* Dashboard Content */}
+                {dashboardData ? (
+                    <div ref={dashboardRef}>
+                        {/* Header */}
+                        <Header>
+                            <HeaderTitle>
+                                <h1>{dashboardData.dashboard_info.title}</h1>
+                                <span>{dashboardData.dashboard_info.date}</span>
+                            </HeaderTitle>
+                            <LastUpdate>
+                                Última atualização: {dashboardData.dashboard_info.last_update}
+                            </LastUpdate>
+                        </Header>
+
+                        {/* Companies Section */}
+                        <CompaniesGrid>
+                            <CompanyCard>
+                                <CompanyLabel>Empresa Executora</CompanyLabel>
+                                <CompanyName>{dashboardData.companies.executing_company}</CompanyName>
+                            </CompanyCard>
+                            <CompanyCard>
+                                <CompanyLabel>Empresa Contratante</CompanyLabel>
+                                <CompanyName>{dashboardData.companies.contracting_company}</CompanyName>
+                            </CompanyCard>
+                        </CompaniesGrid>
+
+                        {/* Overall Progress */}
+                        <ProgressSection>
+                            <h2>Progresso Geral</h2>
+                            <ProgressBarContainer>
+                                <ProgressBar width={dashboardData.progress_overview.total_progress_percentage} />
+                            </ProgressBarContainer>
+                            <ProgressText>
+                                {dashboardData.progress_overview.total_progress_percentage}% Concluído
+                            </ProgressText>
+                        </ProgressSection>
+
+                        {/* Status Cards */}
+                        <StatusCardsGrid>
+                            <StatusCard>
+                                <h3>Total de Tarefas</h3>
+                                <p>{dashboardData.progress_overview.total_tasks}</p>
+                            </StatusCard>
+                            <StatusCard>
+                                <h3>Concluídas</h3>
+                                <p>{dashboardData.progress_overview.completed_tasks}</p>
+                            </StatusCard>
+                            <StatusCard>
+                                <h3>Em Andamento</h3>
+                                <p>{dashboardData.progress_overview.in_progress_tasks}</p>
+                            </StatusCard>
+                            <StatusCard>
+                                <h3>Horas Totais</h3>
+                                <p>{dashboardData.progress_overview.total_hours}h</p>
+                            </StatusCard>
+                        </StatusCardsGrid>
+
+                        {/* Stages and Tasks */}
+                        <SectionTitle>Etapas do Projeto</SectionTitle>
+                        {dashboardData.stages.map(stage => renderStage(stage))}
+
+                        {/* Pendencies */}
+                        <PendenciesSection>
+                            <PendenciesHeader>
+                                <AlertCircle size={20} />
+                                <h2>Pendências</h2>
+                            </PendenciesHeader>
+                            <PendenciesList>
+                                {dashboardData.pendencies.length > 0 ? (
+                                    dashboardData.pendencies.map((pendency, index) => (
+                                        <li key={index}>{pendency}</li>
+                                    ))
+                                ) : (
+                                    <li>Nenhuma pendência registrada</li>
+                                )}
+                            </PendenciesList>
+                        </PendenciesSection>
+
+                        {/* Footer */}
+                        <Footer>
+                            <p>Dashboard Nota Modelo 21 | {dashboardData.companies.executing_company}</p>
+                        </Footer>
                     </div>
-
-                    <div className="pendencies">
-                        <h2>Pendências</h2>
-                        <ul>
-                            {dashboardData.pendencies.map((pendency, index) => (
-                                <li key={index}>{pendency}</li>
-                            ))}
-                        </ul>
-                    </div>
-
-                    <div className="footer">
-                        <p>Última atualização: {dashboardData.dashboard_info.last_update} | {dashboardData.companies.executing_company}</p>
-                    </div>
-                </div>
-            )}
-
-            <style>{`
-    :root {
-        --dark-blue: #0a2647;
-        --medium-blue: #144272;
-        --light-blue: #205295;
-        --accent-blue: #2c74b3;
-        --highlight: #5499c7;
-        --text-light: #e6f2ff;
-        --text-dark: #102a43;
-        --complete: #2ecc71;
-        --incomplete: #e74c3c;
-        --in-progress: #f39c12;
-    }
-    
-    body {
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        background-color: var(--dark-blue);
-        color: var(--text-light);
-        margin: 0;
-        padding: 0;
-    }
-    
-    .container {
-        max-width: 1200px;
-        margin: 0 auto;
-        padding: 20px;
-    }
-    
-    .header {
-        background-color: var(--medium-blue);
-        padding: 15px 20px;
-        border-radius: 10px 10px 0 0;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 20px;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    }
-    
-    .header h1 {
-        margin: 0;
-        font-size: 24px;
-        font-weight: 500;
-    }
-
-    .companies {
-        background-color: var(--light-blue);
-        padding: 10px 20px;
-        border-radius: 10px;
-        margin-bottom: 15px;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        display: flex;
-        justify-content: space-between;
-    }
-    
-    .company {
-        display: flex;
-        flex-direction: column;
-    }
-    
-    .company-label {
-        font-size: 12px;
-        opacity: 0.8;
-    }
-    
-    .company-name {
-        font-weight: 500;
-        font-size: 16px;
-    }
-    
-    .progress-overview {
-        background-color: var(--light-blue);
-        padding: 20px;
-        border-radius: 10px;
-        margin-bottom: 25px;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    }
-    
-    .progress-bar-container {
-        height: 20px;
-        background-color: rgba(255, 255, 255, 0.1);
-        border-radius: 10px;
-        margin: 15px 0;
-        overflow: hidden;
-    }
-    
-    .progress-bar {
-        height: 100%;
-        background: linear-gradient(90deg, var(--accent-blue), var(--highlight));
-        border-radius: 10px;
-        width: 30%;
-        transition: width 1s ease;
-        position: relative;
-    }
-    
-    .progress-text {
-        text-align: right;
-        font-weight: 500;
-        margin-top: 5px;
-    }
-    
-    .status-summary {
-        display: flex;
-        justify-content: space-between;
-        margin-bottom: 20px;
-    }
-    
-    .status-card {
-        background-color: var(--medium-blue);
-        padding: 15px;
-        border-radius: 8px;
-        flex: 1;
-        margin: 0 10px;
-        text-align: center;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    }
-    
-    .status-card:first-child {
-        margin-left: 0;
-    }
-    
-    .status-card:last-child {
-        margin-right: 0;
-    }
-    
-    .status-card h3 {
-        margin-top: 0;
-        margin-bottom: 10px;
-        font-size: 14px;
-        font-weight: 500;
-        color: var(--text-light);
-        opacity: 0.8;
-    }
-    
-    .status-card p {
-        margin: 0;
-        font-size: 24px;
-        font-weight: 700;
-    }
-    
-    .task-list {
-        background-color: var(--medium-blue);
-        border-radius: 10px;
-        overflow: hidden;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    }
-    
-    .task-list-header {
-        display: grid;
-        grid-template-columns: 40px 3fr 1fr 1fr;
-        background-color: var(--light-blue);
-        padding: 12px 15px;
-        font-weight: 500;
-        font-size: 14px;
-    }
-    
-    .task-row {
-        display: grid;
-        grid-template-columns: 40px 3fr 1fr 1fr;
-        padding: 12px 15px;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        font-size: 14px;
-        align-items: center;
-    }
-    
-    .task-row:last-child {
-        border-bottom: none;
-    }
-    
-    .task-row:hover {
-        background-color: rgba(255, 255, 255, 0.05);
-    }
-    
-    .task-status {
-        width: 20px;
-        height: 20px;
-        border-radius: 50%;
-        margin: 0 auto;
-    }
-    
-    .complete {
-        background-color: var(--complete);
-    }
-    
-    .in-progress {
-        background-color: var(--in-progress);
-    }
-    
-    .incomplete {
-        background-color: var(--incomplete);
-    }
-    
-    .task-name {
-        font-weight: 500;
-    }
-    
-    .task-name.parent {
-        font-weight: 600;
-    }
-    
-    .task-name.child {
-        padding-left: 20px;
-        opacity: 0.9;
-    }
-    
-    .task-duration, .task-completion {
-        text-align: center;
-    }
-    
-    .task-completion-bar {
-        width: 80%;
-        height: 8px;
-        background-color: rgba(255, 255, 255, 0.1);
-        border-radius: 4px;
-        margin: 0 auto;
-        overflow: hidden;
-    }
-    
-    .task-completion-progress {
-        height: 100%;
-        background: linear-gradient(90deg, var(--accent-blue), var(--highlight));
-        border-radius: 4px;
-    }
-    
-    .footer {
-        margin-top: 25px;
-        text-align: center;
-        font-size: 12px;
-        color: var(--text-light);
-        opacity: 0.6;
-    }
-    
-    .badge {
-        display: inline-block;
-        padding: 3px 8px;
-        border-radius: 12px;
-        font-size: 12px;
-        font-weight: 500;
-        margin-left: 5px;
-    }
-    
-    .badge-complete {
-        background-color: var(--complete);
-        color: var(--text-dark);
-    }
-    
-    .badge-in-progress {
-        background-color: var(--in-progress);
-        color: var(--text-dark);
-    }
-    
-    .badge-incomplete {
-        background-color: var(--incomplete);
-        color: var(--text-light);
-    }
-    
-    .pendencies {
-        background-color: var(--light-blue);
-        padding: 20px;
-        border-radius: 10px;
-        margin-top: 25px;
-        margin-bottom: 25px;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    }
-    
-    .pendencies h2 {
-        margin-top: 0;
-        margin-bottom: 15px;
-    }
-    
-    .pendencies ul {
-        margin: 0;
-        padding-left: 20px;
-    }
-    
-    .pendencies li {
-        margin-bottom: 8px;
-    }
-
-    /* Additional styles for dashboard-container and file import */
-    .dashboard-container {
-        max-width: 1200px;
-        margin: 0 auto;
-        padding: 20px;
-    }
-    
-    .file-import-section {
-        display: flex;
-        justify-content: space-between;
-        margin-bottom: 20px;
-    }
-    
-    .export-buttons {
-        display: flex;
-        gap: 10px;
-    }
-    
-    .export-buttons button {
-        padding: 10px 15px;
-        background-color: #2c74b3;
-        color: white;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
-    }
-
-    /* Input file styling */
-    input[type="file"] {
-        background-color: var(--light-blue);
-        color: var(--text-light);
-        padding: 10px;
-        border-radius: 5px;
-        border: 1px solid var(--accent-blue);
-    }
-`}</style>
-        </div>
+                ) : (
+                    <EmptyState>
+                        <h2>Nenhum dado carregado</h2>
+                        <p>Importe um arquivo JSON para visualizar o dashboard</p>
+                    </EmptyState>
+                )}
+            </DashboardContainer>
+        </>
     );
 };
 
