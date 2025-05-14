@@ -8,7 +8,9 @@ const Login = lazy(() => import("../pages/Login"));
 const Home = lazy(() => import("../pages/Home"));
 const Orcamento = lazy(() => import("../pages/Orcamento/Orcamento"));
 const FuncionariosRoutes = lazy(() => import("./FuncionariosRoutes"));
-const Medicao = lazy(() => import("../pages/Medicao/Medicao"));
+const DashboardModal = lazy(() => import("../pages/Medicao/DashboardModal"));
+const Apontamentos = lazy(() => import("../pages/Apontamentos/Apontamentos"));
+
 
 
 /**
@@ -68,7 +70,17 @@ const AppRoutes: React.FC = () => {
                         element={
                             <PrivateRoute>
                                 <MainLayout>
-                                    <Medicao />
+                                    <DashboardModal />
+                                </MainLayout>
+                            </PrivateRoute>
+                        }
+                    />
+                    <Route
+                        path="/apontamentos"
+                        element={
+                            <PrivateRoute>
+                                <MainLayout>
+                                    <Apontamentos />
                                 </MainLayout>
                             </PrivateRoute>
                         }

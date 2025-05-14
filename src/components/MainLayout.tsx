@@ -151,7 +151,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
         { title: 'Funcionários', path: '/funcionarios', icon: <Users size={20} /> },
         { title: 'Projetos', path: '/projetos', icon: <BarChart2 size={20} /> },
         { title: 'Recursos', path: '/recursos', icon: <Briefcase size={20} /> },
-        { title: 'Relatórios', path: '/relatorios', icon: <FileText size={20} /> },
+        { title: 'Medicao', path: '/medicao', icon: <FileText size={20} /> },
     ];
 
     const handleNavigation = (path: string): void => {

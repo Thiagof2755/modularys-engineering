@@ -243,10 +243,10 @@ const Home = () => {
         },
         {
             id: 4,
-            title: 'Recursos',
-            description: 'Alocação e gerenciamento de recursos',
+            title: 'Apontamentos',
+            description: 'Alocação e gerenciamento de Apontamentos',
             icon: '🤝',
-            path: '/recursos',
+            path: '/apontamentos',
             color: '#e67e22'
         },
         {
