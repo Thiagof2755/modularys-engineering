@@ -1,121 +1,139 @@
 {
-    "dashboard_info": {
-        "title": "Dashboard de Medição - Nota Modelo 21",
-        "date": "09/05/2025",
-        "last_update": "09/05/2025 às 10:35"
+  "dashboard_info": {
+    "title": "Apontamentos Integrace Maio",
+    "date": "09/05/2025",
+    "last_update": "09/05/2025 às 10:35"
+  },
+  "companies": {
+    "executing_company": "Zyra Tecnologia",
+    "contracting_company": "Integrance Contabilidade e Finanças"
+  },
+  "entries": [
+    {
+      "empresa": "Integrace",
+      "responsavel": "Thiago",
+      "solicitante": "Millena",
+      "atividade": "Correção de erro na importação de XML",
+      "data": "5/5/2025",
+      "tempo_gasto": "1:20",
+      "descritivo": "Ajustamos as rotinas de importação do XML do documento de entrada da filial 2301, corrigindo divergências no layout que impediam o processamento. O conserto foi validado em ambiente de teste e aplicado em produção com sucesso."
     },
-    "companies": {
-        "executing_company": "Zyra Tecnologia",
-        "contracting_company": "Integrance Contabilidade e Finanças"
+    {
+      "empresa": "Integrace",
+      "responsavel": "Thiago",
+      "solicitante": "Maiara Toledo",
+      "atividade": "Ajuste de IRRF e CSLL",
+      "data": "5/3/2025",
+      "tempo_gasto": "0:40",
+      "descritivo": "Revisão e correção dos cadastros de cliente, produto e natureza financeira. Realizamos testes de conferência e validamos os novos parâmetros de cálculo de IRRF e CSLL."
     },
-    "entries": [
-        {
-            "empresa": "Integrace",
-            "responsavel": "Thiago",
-            "solicitante": "Millena",
-            "atividade": "Correcao de erro Importacao XML",
-            "data": "5/5/2025",
-            "tempo_gasto": "1:20",
-            "descritivo": "Ajustamos as fontes de importacao do XML do documento de entrada da filial 2301, que estava apresentando problemas. O erro identificado foi uma divergencia no layout do XML em relacao ao esperado. Ajustado e aplicado em producao"
-        },
-        {
-            "empresa": "Integrace",
-            "responsavel": "Thiago",
-            "solicitante": "Maiara Toledo",
-            "atividade": "Ajuste com Impostos IRRF e CSLL",
-            "data": "5/3/2025",
-            "tempo_gasto": "0:40",
-            "descritivo": "Ajustes nos cadastos de cliente, produto e Natureza financeira, acompanhamento e validacao dos mesmos"
-        },
-        {
-            "empresa": "Integrace",
-            "responsavel": "Thiago",
-            "solicitante": "Maiara Toledo",
-            "atividade": "Erro Nf Espelho exportacao",
-            "data": "6/5/2050",
-            "tempo_gasto": "1:30",
-            "descritivo": "Fiz um ajuste pois o layout do X ml mudou e foi necessario uma nova tag de mapeamento alem de habilitar para importacao na filial 2402"
-        },
-        {
-            "empresa": "Integrace",
-            "responsavel": "Thiago",
-            "solicitante": "Maiara Toledo",
-            "atividade": "Problema na importacao de xml",
-            "data": "5/7/2025",
-            "tempo_gasto": "1:30",
-            "descritivo": "Foi ajustado fonte de importacao de documento de entrada pois o estava com erro em uma variavel de tipo errado"
-        },
-        {
-            "empresa": "Integrace",
-            "responsavel": "Thiago",
-            "solicitante": "Maiara Toledo",
-            "atividade": "NF nao salva mas nao da Erro",
-            "data": "5/7/2025",
-            "tempo_gasto": "0:50",
-            "descritivo": "Foi identificado que o compartilhamento entre as tabelas de natureza entre as filial 2401 e 2402 nao estavam compartilhados mas o cadastro de clientes sim o que causava um erro quando puxava a natureza do cliente apos divulgar identificamos o erro e foi tratado com a maiara"
-        },
-        {
-            "empresa": "Integrace",
-            "responsavel": "Thiago",
-            "solicitante": "Millena",
-            "atividade": "Ajuda contabil",
-            "data": "5/8/2025",
-            "tempo_gasto": "0:30",
-            "descritivo": "Ajuda com duvidas e conferencia"
-        },
-        {
-            "empresa": "Integrance",
-            "responsavel": "Washington",
-            "solicitante": "Maiara",
-            "atividade": "Cancelamento de nota fiscal",
-            "data": "9/5/2025",
-            "tempo_gasto": "0:40",
-            "descritivo": "Correção da configuração para cancelamento da nota fiscal filial 2402, foram excluidas duas notas que nao haviam sido transmitidas ao SEFAZ."
-        },
-        {
-            "empresa": "Integrance",
-            "responsavel": "Washington",
-            "solicitante": "Aline",
-            "atividade": "Acesso ao protheus",
-            "data": "2/5/2025",
-            "tempo_gasto": "0:15",
-            "descritivo": "Usuario relatou nao conseguir acessar o sistema, fizemos teste e orientamos a validar o acesso por uma conexao 4g ou 5g ao qual foi constatado problema em sua internet."
-        },
-        {
-            "empresa": "Integrance",
-            "responsavel": "Washington",
-            "solicitante": "Ana Claudia/Maiara",
-            "atividade": "Duvidas sobre cadastro de TES",
-            "data": "5/5/2025",
-            "tempo_gasto": "0:20",
-            "descritivo": "Orientação sobre como cadastrar TES e configura-la para calculo do PIS e COFINS"
-        },
-        {
-            "empresa": "Integrance",
-            "responsavel": "Washington",
-            "solicitante": "Bruna",
-            "atividade": "Erro baixa financeira (Contabilização)",
-            "data": "6/5/2025",
-            "tempo_gasto": "0:40",
-            "descritivo": "Correção codigo fonte ao qual estava apresentando erro durante a contabilização de baixa financeira"
-        },
-        {
-            "empresa": "Integrance",
-            "responsavel": "Washington",
-            "solicitante": "Aline Glaicon",
-            "atividade": "Correção contabilização nota fiscal/baixa financeira",
-            "data": "7/5/2025",
-            "tempo_gasto": "1:00",
-            "descritivo": "Realizado correção da regra de contabilização para descontar o valor do juros ao contabilizar a baixa do IR de título pago com atraso."
-        },
-        {
-            "empresa": "Integrace",
-            "responsavel": "Thiago",
-            "solicitante": "Maiara Toledo",
-            "atividade": "Ajuda com Emissao de NF",
-            "data": "5/12/2025",
-            "tempo_gasto": "1:20",
-            "descritivo": "Ajuda com entrada do espelho da Nf e no processo de transmisao pois a mesma dava erro ao tentar trasmitir no Sefaz: erro principal data de desembaraço aduaneiro"
-        }
-    ]
+    {
+      "empresa": "Integrace",
+      "responsavel": "Thiago",
+      "solicitante": "Maiara Toledo",
+      "atividade": "Erro NF Espelho exportação",
+      "data": "6/5/2025",
+      "tempo_gasto": "1:30",
+      "descritivo": "Adequamos o mapeamento do XML após mudança de layout, adicionando nova tag e habilitando a importação para filial 2402. Testes concluídos sem inconformidades."
+    },
+    {
+      "empresa": "Integrace",
+      "responsavel": "Thiago",
+      "solicitante": "Maiara Toledo",
+      "atividade": "Problema na importação de XML",
+      "data": "5/7/2025",
+      "tempo_gasto": "1:30",
+      "descritivo": "Corrigimos a variável com tipo incorreto na fonte de importação de documento de entrada, restabelecendo o processo automático sem falhas."
+    },
+    {
+      "empresa": "Integrace",
+      "responsavel": "Thiago",
+      "solicitante": "Maiara Toledo",
+      "atividade": "NF não salva mas não dá erro",
+      "data": "5/7/2025",
+      "tempo_gasto": "0:50",
+      "descritivo": "Identificamos que as tabelas de natureza das filiais 2401 e 2402 não estavam compartilhadas corretamente, embora o cadastro de clientes estivesse. Alinhamos o compartilhamento e validamos o salvamento da nota."
+    },
+    {
+      "empresa": "Integrace",
+      "responsavel": "Thiago",
+      "solicitante": "Millena",
+      "atividade": "Suporte contábil",
+      "data": "5/8/2025",
+      "tempo_gasto": "0:30",
+      "descritivo": "Esclarecimento de dúvidas e conferência de lançamentos contábeis, garantindo a conformidade com as diretrizes fiscais."
+    },
+    {
+      "empresa": "Integrance",
+      "responsavel": "Washington",
+      "solicitante": "Maiara",
+      "atividade": "Cancelamento de nota fiscal",
+      "data": "9/5/2025",
+      "tempo_gasto": "0:40",
+      "descritivo": "Ajustamos a configuração para cancelamento de notas na filial 2402 e excluímos duas notas que não haviam sido transmitidas ao SEFAZ."
+    },
+    {
+      "empresa": "Integrance",
+      "responsavel": "Washington",
+      "solicitante": "Aline",
+      "atividade": "Acesso ao Protheus",
+      "data": "2/5/2025",
+      "tempo_gasto": "0:15",
+      "descritivo": "Usuária relatou dificuldade de acesso ao sistema. Testamos e orientamos a troca de rede para 4G/5G, identificando instabilidade na conexão local."
+    },
+    {
+      "empresa": "Integrance",
+      "responsavel": "Washington",
+      "solicitante": "Ana Claudia/Maiara",
+      "atividade": "Dúvidas sobre cadastro de TES",
+      "data": "5/5/2025",
+      "tempo_gasto": "0:20",
+      "descritivo": "Orientação passo a passo para criação e configuração de TES, incluindo os cálculos de PIS e COFINS."
+    },
+    {
+      "empresa": "Integrance",
+      "responsavel": "Washington",
+      "solicitante": "Bruna",
+      "atividade": "Erro baixa financeira (Contabilização)",
+      "data": "6/5/2025",
+      "tempo_gasto": "0:40",
+      "descritivo": "Ajuste no código-fonte que gerava falha durante a contabilização da baixa financeira, restaurando o fluxo normal."
+    },
+    {
+      "empresa": "Integrance",
+      "responsavel": "Washington",
+      "solicitante": "Aline Glaicon",
+      "atividade": "Correção contabilização nota fiscal/baixa financeira",
+      "data": "7/5/2025",
+      "tempo_gasto": "1:00",
+      "descritivo": "Refinamos a regra de contabilização para descontar corretamente o valor dos juros de IR em títulos pagos com atraso."
+    },
+    {
+      "empresa": "Integrace",
+      "responsavel": "Thiago",
+      "solicitante": "Maiara Toledo",
+      "atividade": "Suporte na emissão de NF espelho",
+      "data": "12/5/2025",
+      "tempo_gasto": "1:20",
+      "descritivo": "Auxiliamos na importação do espelho de NF e solucionamos erro de transmissão ao SEFAZ, causado pela data de desembaraço aduaneiro."
+    },
+    {
+      "empresa": "Integrace",
+      "responsavel": "Thiago",
+      "solicitante": "Millena",
+      "atividade": "SFT de serviços",
+      "data": "13/5/2025",
+      "tempo_gasto": "1:20",
+      "descritivo": "Realizamos reunião para ajustes na TES de serviços e reprocessamos notas para correta contabilização nos livros fiscais."
+    },
+    {
+      "empresa": "Integrace",
+      "responsavel": "Thiago",
+      "solicitante": "Maiara Toledo",
+      "atividade": "PIS e COFINS divergentes",
+      "data": "14/5/2025",
+      "tempo_gasto": "1:10",
+      "descritivo": "Analisamos nota com base de cálculo divergente para PIS e COFINS. Identificamos redução indevida na base de produto e corrigimos o cadastro para respeitar o padrão 'valor total menos ICMS'."
+    }
+  ]
 }

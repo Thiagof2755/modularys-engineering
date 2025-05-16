@@ -1,8 +1,9 @@
 import React, { useState, useRef } from 'react';
 import styled from 'styled-components';
-import { AlertCircle, Calendar, Clock, Download, FileText, Filter, Search, Upload, User, Users, X } from 'lucide-react';
+import { Calendar, Clock, Download, FileText, Search, Upload, User, Users, X, FileSpreadsheet } from 'lucide-react';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
+import * as XLSX from 'xlsx';
 
 // Define TypeScript interfaces
 interface ActivityEntry {
@@ -209,6 +210,14 @@ const ActionButton = styled.button`
   }
 `;
 
+const ExcelButton = styled(ActionButton)`
+  background-color: #217346;
+  
+  &:hover {
+    background-color: #1a5c38;
+  }
+`;
+
 // Dashboard Styled Components
 const DashboardContainer = styled.div`
   padding: 24px;
@@ -326,118 +335,6 @@ const StatCard = styled.div`
   }
 `;
 
-const FilterSection = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-  gap: 12px;
-  margin-bottom: 24px;
-  background-color: white;
-  padding: 16px;
-  border-radius: 12px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-`;
-
-const SearchContainer = styled.div`
-  display: flex;
-  align-items: center;
-  background-color: #f1f5f9;
-  border-radius: 6px;
-  padding: 0 12px;
-  flex: 1;
-  min-width: 200px;
-  
-  svg {
-    color: #64748b;
-  }
-  
-  input {
-    border: none;
-    background: none;
-    padding: 10px;
-    width: 100%;
-    font-size: 14px;
-    
-    &:focus {
-      outline: none;
-    }
-  }
-`;
-
-const FilterButton = styled.button`
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  background-color: #f1f5f9;
-  border: none;
-  padding: 10px 16px;
-  border-radius: 6px;
-  font-size: 14px;
-  color: #334155;
-  cursor: pointer;
-  
-  &:hover {
-    background-color: #e2e8f0;
-  }
-`;
-
-const ActivitiesTable = styled.div`
-  background-color: white;
-  border-radius: 12px;
-  overflow: hidden;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-  margin-bottom: 24px;
-`;
-
-const TableHeader = styled.div`
-  display: grid;
-  grid-template-columns: 1fr 1fr 1.5fr 1fr 1fr;
-  padding: 16px;
-  background-color: #f8fafc;
-  border-bottom: 1px solid #e2e8f0;
-  
-  div {
-    font-size: 14px;
-    font-weight: 600;
-    color: #64748b;
-  }
-  
-  @media (max-width: 768px) {
-    grid-template-columns: 1fr 1fr 1fr;
-    
-    div:nth-child(4), div:nth-child(5) {
-      display: none;
-    }
-  }
-`;
-
-const TableRow = styled.div`
-  display: grid;
-  grid-template-columns: 1fr 1fr 1.5fr 1fr 1fr;
-  padding: 16px;
-  border-bottom: 1px solid #e2e8f0;
-  
-  &:last-child {
-    border-bottom: none;
-  }
-  
-  &:hover {
-    background-color: #f1f5f9;
-  }
-  
-  @media (max-width: 768px) {
-    grid-template-columns: 1fr 1fr 1fr;
-    
-    div:nth-child(4), div:nth-child(5) {
-      display: none;
-    }
-  }
-`;
-
-const TableCell = styled.div`
-  font-size: 14px;
-  color: #334155;
-`;
-
 const ActivityCard = styled.div`
   background-color: white;
   border-radius: 12px;
@@ -505,31 +402,6 @@ const TimeTag = styled.div`
   }
 `;
 
-const Pagination = styled.div`
-  display: flex;
-  justify-content: center;
-  gap: 8px;
-  margin-top: 24px;
-`;
-
-const PageButton = styled.button<{ active?: boolean }>`
-  width: 36px;
-  height: 36px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 6px;
-  border: 1px solid ${props => props.active ? '#2c74b3' : '#e2e8f0'};
-  background-color: ${props => props.active ? '#e0f2fe' : 'white'};
-  color: ${props => props.active ? '#2c74b3' : '#64748b'};
-  font-weight: ${props => props.active ? '600' : '400'};
-  cursor: pointer;
-  
-  &:hover {
-    background-color: ${props => props.active ? '#e0f2fe' : '#f1f5f9'};
-  }
-`;
-
 const Footer = styled.div`
   text-align: center;
   margin-top: 40px;
@@ -562,12 +434,12 @@ const GlobalStyle = styled.div`
 `;
 
 // Helper functions
-const formatTime = (timeStr: string): string => {
+const formatTime = (timeStr: string) => {
     const [hours, minutes] = timeStr.split(':').map(Number);
     return `${hours}h ${minutes}min`;
 };
 
-const sumTimes = (times: string[]): string => {
+const sumTimes = (times: any[]) => {
     let totalMinutes = 0;
 
     times.forEach(time => {
@@ -581,7 +453,7 @@ const sumTimes = (times: string[]): string => {
     return `${hours}:${minutes.toString().padStart(2, '0')}`;
 };
 
-const formatDate = (dateStr: string): string => {
+const formatDate = (dateStr: string) => {
     try {
         const parts = dateStr.split('/');
         if (parts.length !== 3) return dateStr;
@@ -599,23 +471,19 @@ const formatDate = (dateStr: string): string => {
 const Apontamentos = () => {
     const [activityData, setActivityData] = useState<ActivityData | null>(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [searchText, setSearchText] = useState("");
-    const [filteredEntries, setFilteredEntries] = useState<ActivityEntry[]>([]);
-    const [currentPage, setCurrentPage] = useState(1);
     const [exportingPDF, setExportingPDF] = useState(false);
-    const itemsPerPage = 10;
+    const [exportingExcel, setExportingExcel] = useState(false);
     const dashboardRef = useRef<HTMLDivElement>(null);
 
     // Handle JSON file import
     const handleFileImport = (event: React.ChangeEvent<HTMLInputElement>) => {
-        const file = event.target.files?.[0];
+        const file = event.target.files && event.target.files[0];
         if (file) {
             const reader = new FileReader();
             reader.onload = (e) => {
                 try {
                     const jsonData = JSON.parse(e.target?.result as string);
-                    setActivityData(jsonData as ActivityData);
-                    setFilteredEntries(jsonData.entries);
+                    setActivityData(jsonData);
                     setIsModalOpen(true);
                 } catch (error) {
                     alert('Arquivo JSON inválido');
@@ -626,87 +494,196 @@ const Apontamentos = () => {
         }
     };
 
-    // Filter entries
-    const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const text = e.target.value.toLowerCase();
-        setSearchText(text);
-
-        if (!activityData) return;
-
-        const filtered = activityData.entries.filter(entry =>
-            entry.atividade.toLowerCase().includes(text) ||
-            entry.responsavel.toLowerCase().includes(text) ||
-            entry.solicitante.toLowerCase().includes(text) ||
-            entry.empresa.toLowerCase().includes(text) ||
-            entry.descritivo.toLowerCase().includes(text)
-        );
-
-        setFilteredEntries(filtered);
-        setCurrentPage(1);
-    };
-
-    // Export to PDF with optimization for single page
-    const exportToPDF = () => {
-        if (!dashboardRef.current) return;
+    // Export to PDF - Improved function with better spacing and no borders
+    const exportToPDF = async () => {
+        if (!dashboardRef.current || !activityData) return;
 
         const element = dashboardRef.current;
-        const filename = `${activityData?.dashboard_info.title || 'Relatório de Atividades'}.pdf`;
+        const filename = `${activityData.dashboard_info.title || 'Relatório de Atividades'}.pdf`;
 
-        // Mostrar feedback de carregamento ao usuário
         setExportingPDF(true);
 
-        html2canvas(element, {
-            scale: 2, // Aumenta a escala para melhorar a qualidade
-            useCORS: true,
-            allowTaint: true,
-            scrollX: 0,
-            scrollY: 0,
-            backgroundColor: '#FFFFFF' // Garante fundo branco
-        }).then(canvas => {
-            const imgData = canvas.toDataURL('image/png', 1.0);
-
-            // Configuração para orientação paisagem caso seja necessário
-            const pageOrientation = canvas.width > canvas.height ? 'landscape' : 'portrait';
-
+        try {
+            // Create PDF document
             const pdf = new jsPDF({
-                orientation: pageOrientation,
+                orientation: 'portrait',
                 unit: 'mm',
                 format: 'a4',
                 compress: true
             });
 
-            // Obter dimensões da página A4 em mm
-            const pageWidth = pageOrientation === 'landscape' ? 297 : 210;  // A4 width
-            const pageHeight = pageOrientation === 'landscape' ? 210 : 297; // A4 height
-
-            // Calcular as dimensões para garantir que a imagem caiba na página
-            const imgWidth = pageWidth - 20; // 10mm de margem de cada lado
-            const imgHeight = (canvas.height * imgWidth) / canvas.width;
-
-            // Se a altura for maior que a altura da página, redimensionar
-            let finalImgHeight = imgHeight;
-            let finalImgWidth = imgWidth;
-
-            if (imgHeight > (pageHeight - 20)) {
-                finalImgHeight = pageHeight - 20; // 10mm de margem superior e inferior
-                finalImgWidth = (canvas.width * finalImgHeight) / canvas.height;
+            // PDF dimensions
+            const pageWidth = pdf.internal.pageSize.getWidth();
+            const pageHeight = pdf.internal.pageSize.getHeight();
+            
+            // PDF content settings
+            const margin = 10;
+            const contentWidth = pageWidth - (margin * 2);
+            
+            // Add header information
+            let yPos = margin;
+            
+            // Title and Date
+            pdf.setFontSize(16);
+            pdf.setFont('helvetica', 'bold');
+            pdf.text(activityData.dashboard_info.title, margin, yPos);
+            yPos += 7;
+            
+            pdf.setFontSize(10);
+            pdf.setFont('helvetica', 'normal');
+            pdf.text(`Data: ${activityData.dashboard_info.date}`, margin, yPos);
+            yPos += 5;
+            
+            pdf.text(`Última atualização: ${activityData.dashboard_info.last_update}`, margin, yPos);
+            yPos += 10;
+            
+            // Companies
+            pdf.setFontSize(12);
+            pdf.setFont('helvetica', 'bold');
+            pdf.text('Informações da Empresa', margin, yPos);
+            yPos += 7;
+            
+            pdf.setFontSize(10);
+            pdf.setFont('helvetica', 'normal');
+            pdf.text(`Empresa Executora: ${activityData.companies.executing_company}`, margin, yPos);
+            yPos += 5;
+            
+            pdf.text(`Empresa Contratante: ${activityData.companies.contracting_company}`, margin, yPos);
+            yPos += 10;
+            
+            // Statistics
+            const stats = calculateStats();
+            
+            pdf.setFontSize(12);
+            pdf.setFont('helvetica', 'bold');
+            pdf.text('Resumo de Atividades', margin, yPos);
+            yPos += 7;
+            
+            pdf.setFontSize(10);
+            pdf.setFont('helvetica', 'normal');
+            pdf.text(`Total de Atividades: ${stats.total}`, margin, yPos);
+            yPos += 5;
+            
+            pdf.text(`Tempo Total: ${formatTime(stats.totalTime)}`, margin, yPos);
+            yPos += 5;
+            
+            pdf.text(`Responsáveis: ${stats.uniqueUsers}`, margin, yPos);
+            yPos += 5;
+            
+            pdf.text(`Tempo Médio: ${formatTime(stats.avgTime)}`, margin, yPos);
+            yPos += 12;
+            
+            // Activities List
+            pdf.setFontSize(12);
+            pdf.setFont('helvetica', 'bold');
+            pdf.text('Atividades Realizadas', margin, yPos);
+            yPos += 8;
+            
+            // List each activity
+            for (const entry of activityData.entries) {
+                // Check if we need a new page
+                if (yPos > pageHeight - margin * 2) {
+                    pdf.addPage();
+                    yPos = margin + 5;
+                }
+                
+                // Activity title and time
+                pdf.setFontSize(11);
+                pdf.setFont('helvetica', 'bold');
+                
+                // Handle long activity titles
+                const activityTitle = entry.atividade;
+                if (pdf.getStringUnitWidth(activityTitle) * 11 / pdf.internal.scaleFactor > contentWidth - 35) {
+                    const titleLines = pdf.splitTextToSize(activityTitle, contentWidth - 35);
+                    pdf.text(titleLines, margin, yPos);
+                    yPos += (titleLines.length * 5);
+                } else {
+                    pdf.text(activityTitle, margin, yPos);
+                    yPos += 5;
+                }
+                
+                // Time spent
+                pdf.setFontSize(9);
+                pdf.setFont('helvetica', 'normal');
+                pdf.text(`Tempo: ${formatTime(entry.tempo_gasto)}`, contentWidth - 20, yPos - 5, { align: 'right' });
+                
+                // Meta information
+                pdf.text(`Cliente: ${entry.empresa}`, margin, yPos);
+                yPos += 4;
+                
+                pdf.text(`Responsável: ${entry.responsavel} | Solicitante: ${entry.solicitante} | Data: ${formatDate(entry.data)}`, margin, yPos);
+                yPos += 6;
+                
+                // Description
+                pdf.setFontSize(9);
+                pdf.setDrawColor(44, 116, 179); // #2c74b3
+                
+                // Draw a subtle border
+                pdf.setLineWidth(0.1);
+                pdf.line(margin, yPos - 1, margin + contentWidth, yPos - 1);
+                
+                // Handle long descriptions with proper wrapping
+                const descLines = pdf.splitTextToSize(entry.descritivo, contentWidth);
+                pdf.text(descLines, margin, yPos + 4);
+                
+                // Move position after description
+                yPos += (descLines.length * 4) + 8;
+                
+                // Add some space between activities
+                pdf.setDrawColor(200, 200, 200);
+                pdf.setLineWidth(0.1);
+                pdf.line(margin, yPos, margin + contentWidth, yPos);
+                yPos += 8;
             }
-
-            // Centralizar a imagem na página
-            const xPosition = (pageWidth - finalImgWidth) / 2;
-            const yPosition = (pageHeight - finalImgHeight) / 2;
-
-            // Adicionar a imagem ao PDF
-            pdf.addImage(imgData, 'PNG', xPosition, yPosition, finalImgWidth, finalImgHeight);
-
-            // Salvar o arquivo
+            
+            // Footer
+            pdf.setFontSize(8);
+            pdf.setTextColor(100, 100, 100);
+            pdf.text(`Relatório de Atividades | ${activityData.companies.executing_company}`, pageWidth / 2, pageHeight - 10, { align: 'center' });
+            
+            // Save the PDF
             pdf.save(filename);
-            setExportingPDF(false);
-        }).catch(err => {
+        } catch (err) {
             console.error("Erro ao gerar PDF:", err);
-            setExportingPDF(false);
             alert("Houve um erro ao gerar o PDF. Por favor, tente novamente.");
-        });
+        } finally {
+            setExportingPDF(false);
+        }
+    };
+
+    // Export to Excel function
+    const exportToExcel = () => {
+        if (!activityData) return;
+        
+        setExportingExcel(true);
+        
+        try {
+            // Prepare data for Excel
+            const excelData = activityData.entries.map(entry => ({
+                'Responsável': entry.responsavel,
+                'Solicitante': entry.solicitante,
+                'Atividade': entry.atividade,
+                'Data': entry.data,
+                'Tempo Gasto': entry.tempo_gasto,
+                'Descritivo': entry.descritivo
+            }));
+            
+            // Create worksheet
+            const worksheet = XLSX.utils.json_to_sheet(excelData);
+            
+            // Create workbook
+            const workbook = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(workbook, worksheet, 'Atividades');
+            
+            // Generate Excel file
+            const filename = `${activityData.dashboard_info.title || 'Relatório de Atividades'}.xlsx`;
+            XLSX.writeFile(workbook, filename);
+        } catch (err) {
+            console.error("Erro ao gerar Excel:", err);
+            alert("Houve um erro ao gerar o Excel. Por favor, tente novamente.");
+        } finally {
+            setExportingExcel(false);
+        }
     };
 
     // Calculate statistics
@@ -730,17 +707,6 @@ const Apontamentos = () => {
     };
 
     const stats = calculateStats();
-
-    // Pagination
-    const totalPages = Math.ceil(filteredEntries.length / itemsPerPage);
-    const currentEntries = filteredEntries.slice(
-        (currentPage - 1) * itemsPerPage,
-        currentPage * itemsPerPage
-    );
-
-    const handlePageChange = (page: number) => {
-        setCurrentPage(page);
-    };
 
     return (
         <Container>
@@ -775,6 +741,19 @@ const Apontamentos = () => {
                         <ModalHeader>
                             <ModalTitle>{activityData.dashboard_info.title}</ModalTitle>
                             <ModalActions>
+                                <ExcelButton onClick={exportToExcel} disabled={exportingExcel}>
+                                    {exportingExcel ? (
+                                        <>
+                                            <span className="spinner"></span>
+                                            <span>Gerando Excel...</span>
+                                        </>
+                                    ) : (
+                                        <>
+                                            <FileSpreadsheet size={16} />
+                                            <span>Exportar Excel</span>
+                                        </>
+                                    )}
+                                </ExcelButton>
                                 <ActionButton onClick={exportToPDF} disabled={exportingPDF}>
                                     {exportingPDF ? (
                                         <>
@@ -841,26 +820,9 @@ const Apontamentos = () => {
                                 </StatsGrid>
                             </StatsSection>
 
-                            {/* Filter Section */}
-                            <FilterSection>
-                                <SearchContainer>
-                                    <Search size={18} />
-                                    <input
-                                        type="text"
-                                        placeholder="Buscar atividades, responsáveis, descrições..."
-                                        value={searchText}
-                                        onChange={handleSearch}
-                                    />
-                                </SearchContainer>
-                                <FilterButton>
-                                    <Filter size={16} />
-                                    <span>Filtros</span>
-                                </FilterButton>
-                            </FilterSection>
-
-                            {/* Activities List */}
+                            {/* Activities List - ALL at once without pagination */}
                             <SectionTitle>Atividades Realizadas</SectionTitle>
-                            {currentEntries.map((entry, index) => (
+                            {activityData.entries.map((entry, index) => (
                                 <ActivityCard key={index}>
                                     <ActivityHeader>
                                         <div>
@@ -896,21 +858,6 @@ const Apontamentos = () => {
                                     </ActivityDescription>
                                 </ActivityCard>
                             ))}
-
-                            {/* Pagination */}
-                            {totalPages > 1 && (
-                                <Pagination>
-                                    {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
-                                        <PageButton
-                                            key={page}
-                                            active={page === currentPage}
-                                            onClick={() => handlePageChange(page)}
-                                        >
-                                            {page}
-                                        </PageButton>
-                                    ))}
-                                </Pagination>
-                            )}
 
                             {/* Footer */}
                             <Footer>
