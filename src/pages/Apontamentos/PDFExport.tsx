@@ -2,7 +2,6 @@ import React from 'react';
 import { jsPDF } from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import { ActivityData } from './Apontamentos';
-import styled from 'styled-components';
 
 // Interfaces
 interface ActivityStats {
@@ -13,92 +12,47 @@ interface ActivityStats {
 }
 
 interface ExportOptions {
-    theme?: PDFTheme;
     includeStats?: boolean;
-    includeCompanyInfo?: boolean;
-    watermark?: string;
 }
 
-interface PDFTheme {
-    name: string;
-    colors: {
-        primary: [number, number, number];
-        secondary: [number, number, number];
-        accent: [number, number, number];
-        gradient: { start: [number, number, number]; end: [number, number, number]; };
-        background: { main: [number, number, number]; white: [number, number, number]; card: [number, number, number]; section: [number, number, number]; };
-        text: { primary: [number, number, number]; secondary: [number, number, number]; muted: [number, number, number]; white: [number, number, number]; };
-        border: [number, number, number];
-        success: [number, number, number];
-        warning: [number, number, number];
-        error: [number, number, number];
-    };
-}
-
-// Styled Components
-const PreviewContainer = styled.div`
-    display: none;
-`;
-
-// Configurações de Design Profissional
+// Configurações Clean e Profissionais
 const DesignSystem = {
     colors: {
-        primary: [16, 67, 142] as [number, number, number],      // Azul corporativo #10438E
-        secondary: [45, 127, 249] as [number, number, number],    // Azul moderno #2D7FF9
-        accent: [84, 166, 255] as [number, number, number],       // Azul claro #54A6FF
-        gradient: {
-            start: [16, 67, 142] as [number, number, number],     // Azul escuro
-            end: [45, 127, 249] as [number, number, number],      // Azul médio
-        },
+        primary: [40, 40, 40] as [number, number, number],        // Cinza escuro profissional
+        secondary: [80, 80, 80] as [number, number, number],      // Cinza médio
+        accent: [120, 120, 120] as [number, number, number],      // Cinza claro
         background: {
-            main: [249, 251, 253] as [number, number, number],    // Fundo principal #F9FBFD
             white: [255, 255, 255] as [number, number, number],   // Branco puro
-            card: [255, 255, 255] as [number, number, number],    // Fundo do card
-            section: [243, 247, 251] as [number, number, number], // Seção #F3F7FB
+            light: [250, 250, 250] as [number, number, number],   // Cinza muito claro
         },
         text: {
-            primary: [17, 24, 39] as [number, number, number],    // Texto principal #111827
-            secondary: [75, 85, 99] as [number, number, number],  // Texto secundário #4B5563
-            muted: [156, 163, 175] as [number, number, number],   // Texto esmaecido #9CA3AF
-            white: [255, 255, 255] as [number, number, number],   // Texto branco
+            primary: [30, 30, 30] as [number, number, number],    // Texto principal
+            secondary: [100, 100, 100] as [number, number, number], // Texto secundário
+            muted: [150, 150, 150] as [number, number, number],   // Texto esmaecido
         },
-        border: [229, 231, 235] as [number, number, number],      // Borda #E5E7EB
-        success: [16, 185, 129] as [number, number, number],      // Verde #10B981
-        warning: [245, 158, 11] as [number, number, number],      // Amarelo #F59E0B
-        error: [239, 68, 68] as [number, number, number],         // Vermelho #EF4444
+        border: [220, 220, 220] as [number, number, number],      // Borda sutil
     },
     
     typography: {
         sizes: {
-            h1: 24,      // Título principal
-            h2: 18,      // Título seção
-            h3: 14,      // Subtítulo
+            h1: 18,      // Título principal
+            h2: 14,      // Título seção
+            h3: 12,      // Subtítulo
             body: 10,    // Texto corpo
-            small: 8,    // Texto pequeno
-            caption: 7,  // Legenda
-        },
-        weights: {
-            light: 'normal',
-            regular: 'normal',
-            medium: 'normal',
-            bold: 'bold',
+            small: 9,    // Texto pequeno
+            caption: 8,  // Legenda
         },
     },
     
     spacing: {
-        xs: 4,
-        sm: 8,
-        md: 12,
-        lg: 16,
-        xl: 24,
-        xxl: 32,
+        sm: 6,
+        md: 10,
+        lg: 15,
+        xl: 20,
     },
     
     layout: {
         margins: { top: 20, right: 20, bottom: 20, left: 20 },
-        cardPadding: 16,
-        borderRadius: { sm: 4, md: 8, lg: 12 },
-        shadows: { light: 0.03, medium: 0.06, heavy: 0.1 },
     }
 };
 
@@ -131,354 +85,169 @@ const truncateText = (text: string, maxLength: number): string => {
 };
 
 class PDFExport {
-    // Função para adicionar retângulo com cantos arredondados e sombra
-    private static addRoundedRect(
-        doc: jsPDF, 
-        x: number, 
-        y: number, 
-        width: number, 
-        height: number, 
-        radius: number = 8, 
-        fillColor?: number[], 
-        strokeColor?: number[], 
-        addShadow: boolean = true
-    ) {
-        // Sombra sutil
-        if (addShadow) {
-            doc.setFillColor(0, 0, 0, DesignSystem.layout.shadows.light);
-            doc.roundedRect(x + 0.5, y + 0.5, width, height, radius, radius, 'F');
-        }
-        
-        // Retângulo principal
-        if (fillColor) {
-            doc.setFillColor(fillColor[0], fillColor[1], fillColor[2]);
-            doc.roundedRect(x, y, width, height, radius, radius, 'F');
-        }
-        
-        if (strokeColor) {
-            doc.setDrawColor(strokeColor[0], strokeColor[1], strokeColor[2]);
-            doc.setLineWidth(0.3);
-            doc.roundedRect(x, y, width, height, radius, radius, 'S');
-        }
-    }
-
-    // Gradiente aprimorado para header
-    private static addGradientHeader(doc: jsPDF, x: number, y: number, width: number, height: number) {
-        const steps = 25;
-        const stepHeight = height / steps;
-        
-        for (let i = 0; i < steps; i++) {
-            const ratio = i / (steps - 1);
-            const startColor = DesignSystem.colors.gradient.start;
-            const endColor = DesignSystem.colors.gradient.end;
-            
-            const r = Math.round(startColor[0] + (endColor[0] - startColor[0]) * ratio);
-            const g = Math.round(startColor[1] + (endColor[1] - startColor[1]) * ratio);
-            const b = Math.round(startColor[2] + (endColor[2] - startColor[2]) * ratio);
-            
-            doc.setFillColor(r, g, b);
-            doc.rect(x, y + i * stepHeight, width, stepHeight + 0.1, 'F');
-        }
-    }
-
-    // Header profissional e bem proporcionado
+    // Header limpo e profissional
     private static addHeader(doc: jsPDF, activityData: ActivityData): number {
         const pageWidth = doc.internal.pageSize.getWidth();
-        const headerHeight = 55;
         let yPos = DesignSystem.layout.margins.top;
-
-        // Fundo gradiente do header
-        this.addGradientHeader(doc, 0, yPos, pageWidth, headerHeight);
-        
-        // Linha decorativa superior
-        doc.setDrawColor(DesignSystem.colors.accent[0], DesignSystem.colors.accent[1], DesignSystem.colors.accent[2]);
-        doc.setLineWidth(3);
-        doc.line(0, yPos, pageWidth, yPos);
 
         // Título principal
         doc.setFont('helvetica', 'bold');
         doc.setFontSize(DesignSystem.typography.sizes.h1);
-        doc.setTextColor(...DesignSystem.colors.text.white);
-        
-        const titleX = DesignSystem.layout.margins.left;
-        const titleY = yPos + 20;
-        doc.text(activityData.dashboard_info.title, titleX, titleY);
+        doc.setTextColor(...DesignSystem.colors.text.primary);
+        doc.text(activityData.dashboard_info.title, DesignSystem.layout.margins.left, yPos);
 
-        // Subtítulo com data
+        // Linha simples abaixo do título
+        doc.setDrawColor(...DesignSystem.colors.border);
+        doc.setLineWidth(0.5);
+        doc.line(DesignSystem.layout.margins.left, yPos + 5, pageWidth - DesignSystem.layout.margins.right, yPos + 5);
+
+        // Informações do período
+        yPos += DesignSystem.spacing.lg;
         doc.setFont('helvetica', 'normal');
         doc.setFontSize(DesignSystem.typography.sizes.body);
-        doc.setTextColor(...DesignSystem.colors.text.white);
-        doc.text(`Período: ${activityData.dashboard_info.date}`, titleX, titleY + 12);
-
-        // Badge de atualização
-        const updateText = `Atualizado: ${activityData.dashboard_info.last_update}`;
-        const badgeWidth = doc.getTextWidth(updateText) + 16;
-        const badgeX = pageWidth - badgeWidth - DesignSystem.layout.margins.right;
-        const badgeY = yPos + 30;
+        doc.setTextColor(...DesignSystem.colors.text.secondary);
+        doc.text(`Período: ${activityData.dashboard_info.date}`, DesignSystem.layout.margins.left, yPos);
         
-        this.addRoundedRect(doc, badgeX, badgeY, badgeWidth, 14, 7, DesignSystem.colors.background.white);
-        
-        doc.setFont('helvetica', 'normal');
-        doc.setFontSize(DesignSystem.typography.sizes.small);
-        doc.setTextColor(...DesignSystem.colors.primary);
-        doc.text(updateText, badgeX + 8, badgeY + 9);
+        doc.text(`Atualizado: ${activityData.dashboard_info.last_update}`, DesignSystem.layout.margins.left, yPos + 8);
 
-        return yPos + headerHeight + DesignSystem.spacing.lg;
+        return yPos + DesignSystem.spacing.xl;
     }
 
-    // Seção de empresas mais compacta e profissional
+    // Seção de empresas simplificada
     private static addCompaniesSection(doc: jsPDF, activityData: ActivityData, yPos: number): number {
         const pageWidth = doc.internal.pageSize.getWidth();
-        const cardHeight = 45;
-        const cardGap = DesignSystem.spacing.md;
-        const totalWidth = pageWidth - (DesignSystem.layout.margins.left + DesignSystem.layout.margins.right);
-        const cardWidth = (totalWidth - cardGap) / 2;
-
-        // Empresa Executora
-        const leftCardX = DesignSystem.layout.margins.left;
-        this.addRoundedRect(doc, leftCardX, yPos, cardWidth, cardHeight, 8, DesignSystem.colors.background.white, DesignSystem.colors.border);
-        
-        // Ícone da empresa executora
-        this.addRoundedRect(doc, leftCardX + 8, yPos + 8, 6, 6, 3, DesignSystem.colors.primary);
-        
-        doc.setFont('helvetica', 'bold');
-        doc.setFontSize(DesignSystem.typography.sizes.small);
-        doc.setTextColor(...DesignSystem.colors.text.secondary);
-        doc.text('EMPRESA EXECUTORA', leftCardX + 20, yPos + 14);
-        
-        doc.setFont('helvetica', 'bold');
-        doc.setFontSize(DesignSystem.typography.sizes.h3);
-        doc.setTextColor(...DesignSystem.colors.text.primary);
-        const executingLines = doc.splitTextToSize(activityData.companies.executing_company, cardWidth - 24);
-        doc.text(executingLines, leftCardX + 20, yPos + 26);
-
-        // Empresa Contratante
-        const rightCardX = leftCardX + cardWidth + cardGap;
-        this.addRoundedRect(doc, rightCardX, yPos, cardWidth, cardHeight, 8, DesignSystem.colors.background.white, DesignSystem.colors.border);
-        
-        // Ícone da empresa contratante
-        this.addRoundedRect(doc, rightCardX + 8, yPos + 8, 6, 6, 3, DesignSystem.colors.secondary);
-        
-        doc.setFont('helvetica', 'bold');
-        doc.setFontSize(DesignSystem.typography.sizes.small);
-        doc.setTextColor(...DesignSystem.colors.text.secondary);
-        doc.text('EMPRESA CONTRATANTE', rightCardX + 20, yPos + 14);
-        
-        doc.setFont('helvetica', 'bold');
-        doc.setFontSize(DesignSystem.typography.sizes.h3);
-        doc.setTextColor(...DesignSystem.colors.text.primary);
-        const contractingLines = doc.splitTextToSize(activityData.companies.contracting_company, cardWidth - 24);
-        doc.text(contractingLines, rightCardX + 20, yPos + 26);
-
-        return yPos + cardHeight + DesignSystem.spacing.xl;
-    }
-
-    // Seção de estatísticas mais elegante
-    private static addStatsSection(doc: jsPDF, stats: ActivityStats, yPos: number): number {
-        const pageWidth = doc.internal.pageSize.getWidth();
+        const sectionWidth = pageWidth - (DesignSystem.layout.margins.left + DesignSystem.layout.margins.right);
         
         // Título da seção
         doc.setFont('helvetica', 'bold');
         doc.setFontSize(DesignSystem.typography.sizes.h2);
         doc.setTextColor(...DesignSystem.colors.text.primary);
-        doc.text('Resumo Executivo', DesignSystem.layout.margins.left, yPos);
-        
-        // Linha decorativa
-        doc.setDrawColor(...DesignSystem.colors.primary);
-        doc.setLineWidth(2);
-        doc.line(DesignSystem.layout.margins.left, yPos + 4, DesignSystem.layout.margins.left + 40, yPos + 4);
+        doc.text('Informações das Empresas', DesignSystem.layout.margins.left, yPos);
+        yPos += DesignSystem.spacing.md;
 
-        const statsY = yPos + DesignSystem.spacing.lg;
-        const cardHeight = 38;
-        const cardGap = DesignSystem.spacing.sm;
-        const totalWidth = pageWidth - (DesignSystem.layout.margins.left + DesignSystem.layout.margins.right);
-        const cardWidth = (totalWidth - (3 * cardGap)) / 4;
+        // Empresa Executora
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(DesignSystem.typography.sizes.body);
+        doc.setTextColor(...DesignSystem.colors.text.secondary);
+        doc.text('Empresa Executora:', DesignSystem.layout.margins.left, yPos);
+        
+        doc.setFont('helvetica', 'normal');
+        doc.setTextColor(...DesignSystem.colors.text.primary);
+        const executingLines = doc.splitTextToSize(activityData.companies.executing_company, sectionWidth - 50);
+        doc.text(executingLines, DesignSystem.layout.margins.left + 50, yPos);
+        yPos += Math.max(8, executingLines.length * 5);
+
+        // Empresa Contratante
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(DesignSystem.typography.sizes.body);
+        doc.setTextColor(...DesignSystem.colors.text.secondary);
+        doc.text('Empresa Contratante:', DesignSystem.layout.margins.left, yPos);
+        
+        doc.setFont('helvetica', 'normal');
+        doc.setTextColor(...DesignSystem.colors.text.primary);
+        const contractingLines = doc.splitTextToSize(activityData.companies.contracting_company, sectionWidth - 50);
+        doc.text(contractingLines, DesignSystem.layout.margins.left + 50, yPos);
+
+        return yPos + DesignSystem.spacing.xl;
+    }
+
+    // Seção de estatísticas clean
+    private static addStatsSection(doc: jsPDF, stats: ActivityStats, yPos: number): number {
+        // Título da seção
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(DesignSystem.typography.sizes.h2);
+        doc.setTextColor(...DesignSystem.colors.text.primary);
+        doc.text('Resumo', DesignSystem.layout.margins.left, yPos);
+        yPos += DesignSystem.spacing.md;
 
         const statsData = [
-            { 
-                label: 'Total de\nAtividades', 
-                value: stats.total.toString(), 
-                color: DesignSystem.colors.primary,
-                icon: '📊'
-            },
-            { 
-                label: 'Tempo\nTotal', 
-                value: formatTime(stats.totalTime), 
-                color: DesignSystem.colors.secondary,
-                icon: '⏱️'
-            },
-            { 
-                label: 'Responsáveis\nÚnicos', 
-                value: stats.uniqueUsers.toString(), 
-                color: DesignSystem.colors.accent,
-                icon: '👥'
-            },
-            { 
-                label: 'Tempo\nMédio', 
-                value: formatTime(stats.avgTime), 
-                color: DesignSystem.colors.success,
-                icon: '📈'
-            }
+            { label: 'Total de Atividades:', value: stats.total.toString() },
+            { label: 'Tempo Total:', value: formatTime(stats.totalTime) },
+            { label: 'Responsáveis Únicos:', value: stats.uniqueUsers.toString() },
+            { label: 'Tempo Médio por Atividade:', value: formatTime(stats.avgTime) }
         ];
 
         statsData.forEach((stat, index) => {
-            const cardX = DesignSystem.layout.margins.left + (index * (cardWidth + cardGap));
+            const currentY = yPos + (index * 10);
             
-            // Card principal
-            this.addRoundedRect(doc, cardX, statsY, cardWidth, cardHeight, 8, DesignSystem.colors.background.white, DesignSystem.colors.border);
-            
-            // Barra de cor no topo
-            this.addRoundedRect(doc, cardX, statsY, cardWidth, 3, 8, stat.color);
-            
-            // Valor principal
             doc.setFont('helvetica', 'bold');
-            doc.setFontSize(DesignSystem.typography.sizes.h2);
-            doc.setTextColor(...DesignSystem.colors.text.primary);
-            doc.text(stat.value, cardX + cardWidth/2, statsY + 20, { align: 'center' });
-            
-            // Label
-            doc.setFont('helvetica', 'normal');
-            doc.setFontSize(DesignSystem.typography.sizes.small);
+            doc.setFontSize(DesignSystem.typography.sizes.body);
             doc.setTextColor(...DesignSystem.colors.text.secondary);
-            const labelLines = stat.label.split('\n');
-            labelLines.forEach((line, lineIndex) => {
-                doc.text(line, cardX + cardWidth/2, statsY + 28 + (lineIndex * 3), { align: 'center' });
-            });
+            doc.text(stat.label, DesignSystem.layout.margins.left, currentY);
+            
+            doc.setFont('helvetica', 'normal');
+            doc.setTextColor(...DesignSystem.colors.text.primary);
+            doc.text(stat.value, DesignSystem.layout.margins.left + 60, currentY);
         });
 
-        return statsY + cardHeight + DesignSystem.spacing.xl;
+        return yPos + (statsData.length * 10) + DesignSystem.spacing.xl;
     }
 
-    // Card de atividade redesenhado para ser mais compacto e profissional
+    // Card de atividade minimalista
     private static addActivityCard(doc: jsPDF, entry: any, index: number, yPos: number): number {
         const pageWidth = doc.internal.pageSize.getWidth();
         const pageHeight = doc.internal.pageSize.getHeight();
         
-        // Estimativa de altura do card
-        const estimatedHeight = 80; // Altura base mais compacta
-        
         // Verificar se precisa de nova página
-        if (yPos + estimatedHeight > pageHeight - 40) {
+        if (yPos + 60 > pageHeight - 40) {
             doc.addPage();
-            doc.setFillColor(...DesignSystem.colors.background.main);
-            doc.rect(0, 0, pageWidth, pageHeight, 'F');
             yPos = 30;
         }
 
         const cardWidth = pageWidth - (DesignSystem.layout.margins.left + DesignSystem.layout.margins.right);
-        const cardHeight = 75; // Altura fixa mais compacta
         
-        // Card principal
-        this.addRoundedRect(
-            doc, 
-            DesignSystem.layout.margins.left, 
-            yPos, 
-            cardWidth, 
-            cardHeight, 
-            DesignSystem.layout.borderRadius.lg, 
-            DesignSystem.colors.background.white, 
-            DesignSystem.colors.border
-        );
-
-        // Barra lateral de status
-        this.addRoundedRect(
-            doc, 
-            DesignSystem.layout.margins.left, 
-            yPos, 
-            4, 
-            cardHeight, 
-            DesignSystem.layout.borderRadius.sm, 
-            DesignSystem.colors.success
-        );
+        // Fundo sutil do card
+        doc.setFillColor(...DesignSystem.colors.background.light);
+        doc.rect(DesignSystem.layout.margins.left, yPos, cardWidth, 50, 'F');
+        
+        // Borda do card
+        doc.setDrawColor(...DesignSystem.colors.border);
+        doc.setLineWidth(0.3);
+        doc.rect(DesignSystem.layout.margins.left, yPos, cardWidth, 50, 'S');
 
         // Número da atividade
-        const numberBadgeSize = 20;
-        this.addRoundedRect(
-            doc, 
-            DesignSystem.layout.margins.left + 8, 
-            yPos + 8, 
-            numberBadgeSize, 
-            numberBadgeSize, 
-            numberBadgeSize/2, 
-            DesignSystem.colors.primary
-        );
-        
         doc.setFont('helvetica', 'bold');
         doc.setFontSize(DesignSystem.typography.sizes.small);
-        doc.setTextColor(...DesignSystem.colors.text.white);
-        doc.text((index + 1).toString(), DesignSystem.layout.margins.left + 18, yPos + 19, { align: 'center' });
+        doc.setTextColor(...DesignSystem.colors.text.muted);
+        doc.text(`#${(index + 1).toString().padStart(2, '0')}`, DesignSystem.layout.margins.left + 5, yPos + 8);
 
         // Título da atividade
-        const titleX = DesignSystem.layout.margins.left + 35;
+        const titleX = DesignSystem.layout.margins.left + 20;
         doc.setFont('helvetica', 'bold');
-        doc.setFontSize(DesignSystem.typography.sizes.h3);
+        doc.setFontSize(DesignSystem.typography.sizes.body);
         doc.setTextColor(...DesignSystem.colors.text.primary);
-        const titleLines = doc.splitTextToSize(entry.atividade, cardWidth - 120);
-        doc.text(titleLines.slice(0, 2), titleX, yPos + 16); // Máximo 2 linhas
+        const titleLines = doc.splitTextToSize(entry.atividade, cardWidth - 80);
+        doc.text(titleLines.slice(0, 2), titleX, yPos + 8);
 
-        // Badge de tempo
+        // Tempo no canto direito
         const timeText = formatTime(entry.tempo_gasto);
-        const timeWidth = doc.getTextWidth(timeText) + 12;
-        const timeX = pageWidth - timeWidth - DesignSystem.layout.margins.right - 8;
-        
-        this.addRoundedRect(doc, timeX, yPos + 8, timeWidth, 16, 8, DesignSystem.colors.accent);
-        
+        const timeX = pageWidth - DesignSystem.layout.margins.right - doc.getTextWidth(timeText);
         doc.setFont('helvetica', 'bold');
-        doc.setFontSize(DesignSystem.typography.sizes.small);
-        doc.setTextColor(...DesignSystem.colors.text.white);
-        doc.text(timeText, timeX + timeWidth/2, yPos + 18, { align: 'center' });
+        doc.setFontSize(DesignSystem.typography.sizes.body);
+        doc.setTextColor(...DesignSystem.colors.primary);
+        doc.text(timeText, timeX, yPos + 8);
 
-        // Informações em linha (mais compactas)
-        const infoY = yPos + 35;
-        const infoSpacing = (cardWidth - 40) / 3;
-        
-        // Responsável
-        doc.setFont('helvetica', 'normal');
-        doc.setFontSize(DesignSystem.typography.sizes.caption);
-        doc.setTextColor(...DesignSystem.colors.text.secondary);
-        doc.text('RESPONSÁVEL', titleX, infoY);
-        
-        doc.setFont('helvetica', 'bold');
-        doc.setFontSize(DesignSystem.typography.sizes.small);
-        doc.setTextColor(...DesignSystem.colors.text.primary);
-        doc.text(truncateText(entry.responsavel, 20), titleX, infoY + 8);
-
-        // Data
-        const dateX = titleX + infoSpacing;
-        doc.setFont('helvetica', 'normal');
-        doc.setFontSize(DesignSystem.typography.sizes.caption);
-        doc.setTextColor(...DesignSystem.colors.text.secondary);
-        doc.text('DATA', dateX, infoY);
-        
-        doc.setFont('helvetica', 'bold');
-        doc.setFontSize(DesignSystem.typography.sizes.small);
-        doc.setTextColor(...DesignSystem.colors.text.primary);
-        doc.text(formatDate(entry.data), dateX, infoY + 8);
-
-        // Empresa
-        const companyX = titleX + (infoSpacing * 2);
-        doc.setFont('helvetica', 'normal');
-        doc.setFontSize(DesignSystem.typography.sizes.caption);
-        doc.setTextColor(...DesignSystem.colors.text.secondary);
-        doc.text('EMPRESA', companyX, infoY);
-        
-        doc.setFont('helvetica', 'bold');
-        doc.setFontSize(DesignSystem.typography.sizes.small);
-        doc.setTextColor(...DesignSystem.colors.text.primary);
-        doc.text(truncateText(entry.empresa, 25), companyX, infoY + 8);
-
-        // Descrição (mais compacta)
-        const descY = yPos + 52;
+        // Informações em linha
+        const infoY = yPos + 22;
         doc.setFont('helvetica', 'normal');
         doc.setFontSize(DesignSystem.typography.sizes.small);
         doc.setTextColor(...DesignSystem.colors.text.secondary);
-        const descLines = doc.splitTextToSize(entry.descritivo, cardWidth - 40);
-        doc.text(descLines.slice(0, 2), titleX, descY); // Máximo 2 linhas
+        
+        const infoText = `${entry.responsavel} • ${formatDate(entry.data)} • ${truncateText(entry.empresa, 30)}`;
+        doc.text(infoText, titleX, infoY);
 
-        return yPos + cardHeight + DesignSystem.spacing.md;
+        // Descrição
+        const descY = yPos + 32;
+        doc.setFont('helvetica', 'normal');
+        doc.setFontSize(DesignSystem.typography.sizes.small);
+        doc.setTextColor(...DesignSystem.colors.text.secondary);
+        const descLines = doc.splitTextToSize(entry.descritivo, cardWidth - 25);
+        doc.text(descLines.slice(0, 2), titleX, descY);
+
+        return yPos + 60;
     }
 
-    // Footer mais elegante
+    // Footer simples
     private static addFooter(doc: jsPDF, activityData: ActivityData) {
         const totalPages = doc.getNumberOfPages();
         const pageWidth = doc.internal.pageSize.getWidth();
@@ -488,31 +257,22 @@ class PDFExport {
             doc.setPage(i);
             
             const footerY = pageHeight - 15;
-            const footerHeight = 15;
             
-            // Fundo do footer
-            this.addGradientHeader(doc, 0, footerY, pageWidth, footerHeight);
+            // Linha superior
+            doc.setDrawColor(...DesignSystem.colors.border);
+            doc.setLineWidth(0.3);
+            doc.line(DesignSystem.layout.margins.left, footerY, pageWidth - DesignSystem.layout.margins.right, footerY);
             
-            // Informações da empresa
-            doc.setFont('helvetica', 'bold');
-            doc.setFontSize(DesignSystem.typography.sizes.small);
-            doc.setTextColor(...DesignSystem.colors.text.white);
-            doc.text(
-                `Relatório de Atividades • ${truncateText(activityData.companies.executing_company, 40)}`,
-                pageWidth / 2,
-                footerY + 6,
-                { align: 'center' }
-            );
-            
-            // Número da página
+            // Informações do relatório
             doc.setFont('helvetica', 'normal');
             doc.setFontSize(DesignSystem.typography.sizes.caption);
-            doc.text(
-                `Página ${i} de ${totalPages} • ${new Date().toLocaleDateString('pt-BR')}`,
-                pageWidth / 2,
-                footerY + 11,
-                { align: 'center' }
-            );
+            doc.setTextColor(...DesignSystem.colors.text.muted);
+            
+            const leftText = `${truncateText(activityData.companies.executing_company, 50)}`;
+            doc.text(leftText, DesignSystem.layout.margins.left, footerY + 6);
+            
+            const rightText = `Página ${i} de ${totalPages} • ${new Date().toLocaleDateString('pt-BR')}`;
+            doc.text(rightText, pageWidth - DesignSystem.layout.margins.right - doc.getTextWidth(rightText), footerY + 6);
         }
     }
 
@@ -534,8 +294,8 @@ class PDFExport {
             const pageWidth = doc.internal.pageSize.getWidth();
             const pageHeight = doc.internal.pageSize.getHeight();
             
-            // Fundo da página
-            doc.setFillColor(...DesignSystem.colors.background.main);
+            // Fundo branco da página
+            doc.setFillColor(...DesignSystem.colors.background.white);
             doc.rect(0, 0, pageWidth, pageHeight, 'F');
             
             // Construir documento
@@ -550,17 +310,7 @@ class PDFExport {
             doc.setFont('helvetica', 'bold');
             doc.setFontSize(DesignSystem.typography.sizes.h2);
             doc.setTextColor(...DesignSystem.colors.text.primary);
-            doc.text('Atividades Detalhadas', DesignSystem.layout.margins.left, yPos);
-            
-            // Linha decorativa
-            doc.setDrawColor(...DesignSystem.colors.primary);
-            doc.setLineWidth(2);
-            doc.line(
-                DesignSystem.layout.margins.left, 
-                yPos + 4, 
-                DesignSystem.layout.margins.left + 60, 
-                yPos + 4
-            );
+            doc.text('Atividades Executadas', DesignSystem.layout.margins.left, yPos);
             
             yPos += DesignSystem.spacing.lg;
 
@@ -578,27 +328,25 @@ class PDFExport {
                 .replace(/[^a-zA-Z0-9]/g, '_')
                 .substring(0, 12)
                 .toUpperCase();
-            const fileName = `${companyPrefix}_Relatorio_${timestamp}.pdf`;
+            const fileName = `Relatorio_${companyPrefix}_${timestamp}.pdf`;
             
             doc.save(fileName);
             
-            console.log(`✅ PDF profissional gerado: ${fileName}`);
+            console.log(`✅ Relatório PDF gerado: ${fileName}`);
             console.log(`📊 ${activityData.entries.length} atividades exportadas`);
             
             setTimeout(resolve, 100);
         });
     };
 
-    // Função com opções de tema
-    static exportToPDFWithTheme = async (
+    // Função com opções simplificadas
+    static exportToPDFWithOptions = async (
         activityData: ActivityData,
         stats: ActivityStats,
-        themeName: string = 'modern',
-        includeWatermark: boolean = false
+        includeStats: boolean = true
     ): Promise<void> => {
         const options: ExportOptions = {
-            includeStats: true,
-            watermark: includeWatermark ? 'CONFIDENCIAL' : undefined
+            includeStats: includeStats
         };
         
         return this.exportToPDF(activityData, stats, options);
@@ -606,12 +354,3 @@ class PDFExport {
 }
 
 export default PDFExport;
-
-// Tema moderno exportado
-export const modernTechTheme: PDFTheme = {
-    name: 'Modern Professional',
-    colors: DesignSystem.colors
-};
-
-export const typography = DesignSystem.typography;
-export const layout = DesignSystem.layout;
