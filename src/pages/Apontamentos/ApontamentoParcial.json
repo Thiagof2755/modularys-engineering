@@ -1,0 +1,130 @@
+{
+  "dashboard_info": {
+    "title": "Apontamentos Integrace Parcial",
+    "date": "10/06/2025",
+    "last_update": "10/06/2025 às 10:35"
+  },
+  "companies": {
+    "executing_company": "Zyra Tecnologia",
+    "contracting_company": "Integrance Contabilidade e Finanças"
+  },
+  "entries": [
+    {
+      "empresa": "Integrace",
+      "responsavel": "Thiago",
+      "solicitante": "Maiara Toledo / Milena",
+      "atividade": "Suporte e cadastro de dados em filiais",
+      "data": "23/05/2025",
+      "tempo_gasto": "0:40",
+      "descritivo": "Prestei suporte às usuárias, esclarecendo dúvidas e ajustando cadastros nas filiais para Milena e Maiara."
+    },
+    {
+      "empresa": "Integrace",
+      "responsavel": "Thiago",
+      "solicitante": "Maiara Toledo",
+      "atividade": "Correção de erro na importação de notas",
+      "data": "29/05/2025",
+      "tempo_gasto": "1:00",
+      "descritivo": "Identifiquei e corrigi falha na rotina de importação de notas fiscais, validei ajustes e promovi em produção."
+    },
+    {
+      "empresa": "Integrace",
+      "responsavel": "Thiago",
+      "solicitante": "Maiara Toledo",
+      "atividade": "Aprimoramento de parsing de XML",
+      "data": "01/06/2025",
+      "tempo_gasto": "1:10",
+      "descritivo": "Ajustei a lógica de inclusão de produtos, tratando corretamente elementos únicos e arrays antes de criar registros SB1."
+    },
+    {
+      "empresa": "Integrace",
+      "responsavel": "Thiago",
+      "solicitante": "Maiara Toledo",
+      "atividade": "Tratamento de casas decimais",
+      "data": "03/06/2025",
+      "tempo_gasto": "0:45",
+      "descritivo": "Implementei rotina de normalização decimal para garantir captura precisa dos valores."
+    },
+    {
+      "empresa": "Integrace",
+      "responsavel": "Thiago",
+      "solicitante": "Milena",
+      "atividade": "Atualização de rotinas inbound",
+      "data": "03/06/2025",
+      "tempo_gasto": "1:00",
+      "descritivo": "Executei as etapas previstas no manual e apliquei as atualizações necessárias no código-fonte inbound."
+    },
+    {
+      "empresa": "Integrace",
+      "responsavel": "Thiago",
+      "solicitante": "Milena",
+      "atividade": "Ajuste de fluxo inbound",
+      "data": "04/06/2025",
+      "tempo_gasto": "0:30",
+      "descritivo": "Realizei orientações conforme manual e ajustei parâmetros do fluxo inbound."
+    },
+    {
+      "empresa": "Integrace",
+      "responsavel": "Thiago",
+      "solicitante": "Maiara Toledo",
+      "atividade": "Elaboração de manual de acessos",
+      "data": "05/06/2025",
+      "tempo_gasto": "0:20",
+      "descritivo": "Desenvolvi um guia de acesso à base de testes para facilitar o uso das colaboradoras."
+    },
+    {
+      "empresa": "Integrace",
+      "responsavel": "Thiago",
+      "solicitante": "Maiara Toledo",
+      "atividade": "Desbloqueio de tabela e correção de sequência NFe",
+      "data": "07/06/2025",
+      "tempo_gasto": "0:20",
+      "descritivo": "Libertei tabela em lock e reiniciei o sistema para corrigir a sequência de documentos NFe."
+    },
+    {
+      "empresa": "Integrace",
+      "responsavel": "Thiago",
+      "solicitante": "Bruna",
+      "atividade": "Configuração e testes de baixa automática",
+      "data": "06/06/2025",
+      "tempo_gasto": "0:30",
+      "descritivo": "Implementei e validei processo de baixa em lote, gravando vídeo tutorial e enviando para análise da Bruna."
+    },
+    {
+      "empresa": "Integrace",
+      "responsavel": "Washington",
+      "solicitante": "Maiara Toledo",
+      "atividade": "Análise de bloqueio de registro",
+      "data": "02/06/2025",
+      "tempo_gasto": "0:15",
+      "descritivo": "Identifiquei concorrência de usuário no cadastro de Maiara; após finalização do acesso, sistema normalizou."
+    },
+    {
+      "empresa": "Integrace",
+      "responsavel": "Washington",
+      "solicitante": "Maiara Toledo",
+      "atividade": "Correção de lançamento contábil",
+      "data": "02/06/2025",
+      "tempo_gasto": "0:15",
+      "descritivo": "Orientei inclusão do código do fornecedor na rotina contábil, solucionando falha de contabilização."
+    },
+    {
+      "empresa": "Integrace",
+      "responsavel": "Washington",
+      "solicitante": "Maiara Toledo",
+      "atividade": "Cadastro de calendário contábil",
+      "data": "02/06/2025",
+      "tempo_gasto": "0:15",
+      "descritivo": "Auxiliei no cadastramento do calendário contábil da filial, eliminando erro CTGDTCOMP."
+    },
+    {
+      "empresa": "Integrace",
+      "responsavel": "Thiago",
+      "solicitante": "Bruna",
+      "atividade": "Correção de transmissão de NF",
+      "data": "09/06/2025",
+      "tempo_gasto": "0:30",
+      "descritivo": "Ajustei condição de pagamento diretamente no banco de dados para resolver falha na transmissão da NF ao SEFAZ."
+    }
+  ]
+}

@@ -1,8 +1,8 @@
 {
   "dashboard_info": {
     "title": "Apontamentos Integrace Maio",
-    "date": "09/05/2025",
-    "last_update": "09/05/2025 às 10:35"
+    "date": "21/05/2025",
+    "last_update": "21/05/2025 às 10:35"
   },
   "companies": {
     "executing_company": "Zyra Tecnologia",
@@ -13,98 +13,98 @@
       "empresa": "Integrace",
       "responsavel": "Thiago",
       "solicitante": "Millena",
-      "atividade": "Correção de erro na importação de XML",
-      "data": "5/5/2025",
+      "atividade": "Correção de importação de XML",
+      "data": "05/05/2025",
       "tempo_gasto": "1:20",
-      "descritivo": "Ajustamos as rotinas de importação do XML do documento de entrada da filial 2301, corrigindo divergências no layout que impediam o processamento. O conserto foi validado em ambiente de teste e aplicado em produção com sucesso."
+      "descritivo": "Ajustamos as rotinas de importação do XML do documento de entrada da filial 2301, corrigindo divergências no layout que impediam o processamento. A solução foi validada em teste e aplicada com sucesso em produção."
     },
     {
       "empresa": "Integrace",
       "responsavel": "Thiago",
       "solicitante": "Maiara Toledo",
-      "atividade": "Ajuste de IRRF e CSLL",
-      "data": "5/3/2025",
+      "atividade": "Revisão de IRRF e CSLL",
+      "data": "03/05/2025",
       "tempo_gasto": "0:40",
-      "descritivo": "Revisão e correção dos cadastros de cliente, produto e natureza financeira. Realizamos testes de conferência e validamos os novos parâmetros de cálculo de IRRF e CSLL."
+      "descritivo": "Revisamos e corrigimos os cadastros de cliente, produto e natureza financeira, executamos testes de conferência e validamos os novos parâmetros de cálculo de IRRF e CSLL."
     },
     {
       "empresa": "Integrace",
       "responsavel": "Thiago",
       "solicitante": "Maiara Toledo",
-      "atividade": "Erro NF Espelho exportação",
-      "data": "6/5/2025",
+      "atividade": "Ajuste de layout no NF Espelho",
+      "data": "06/05/2025",
       "tempo_gasto": "1:30",
-      "descritivo": "Adequamos o mapeamento do XML após mudança de layout, adicionando nova tag e habilitando a importação para filial 2402. Testes concluídos sem inconformidades."
+      "descritivo": "Adequamos o mapeamento do XML após mudança de layout, criando nova tag e habilitando a importação para a filial 2402. Testes concluídos sem inconformidades."
     },
     {
       "empresa": "Integrace",
       "responsavel": "Thiago",
       "solicitante": "Maiara Toledo",
-      "atividade": "Problema na importação de XML",
-      "data": "5/7/2025",
+      "atividade": "Correção de variável na importação de XML",
+      "data": "07/05/2025",
       "tempo_gasto": "1:30",
-      "descritivo": "Corrigimos a variável com tipo incorreto na fonte de importação de documento de entrada, restabelecendo o processo automático sem falhas."
+      "descritivo": "Identificamos e corrigimos variável com tipo incorreto na rotina de importação de documento de entrada, restabelecendo o processamento automático sem falhas."
     },
     {
       "empresa": "Integrace",
       "responsavel": "Thiago",
       "solicitante": "Maiara Toledo",
-      "atividade": "NF não salva mas não dá erro",
-      "data": "5/7/2025",
+      "atividade": "Correção de salvamento de NF",
+      "data": "07/05/2025",
       "tempo_gasto": "0:50",
-      "descritivo": "Identificamos que as tabelas de natureza das filiais 2401 e 2402 não estavam compartilhadas corretamente, embora o cadastro de clientes estivesse. Alinhamos o compartilhamento e validamos o salvamento da nota."
+      "descritivo": "Detectamos inconsistência no compartilhamento das tabelas de natureza entre as filiais 2401 e 2402. Ajustamos o relacionamento e validamos o salvamento correto da nota."
     },
     {
       "empresa": "Integrace",
       "responsavel": "Thiago",
       "solicitante": "Millena",
       "atividade": "Suporte contábil",
-      "data": "5/8/2025",
-      "tempo_gasto": "0:30",
-      "descritivo": "Esclarecimento de dúvidas e conferência de lançamentos contábeis, garantindo a conformidade com as diretrizes fiscais."
+      "data": "08/05/2025",
+      "tempo_gasto": "0:35",
+      "descritivo": "Esclarecemos dúvidas e conferimos lançamentos contábeis, assegurando conformidade com as diretrizes fiscais."
     },
     {
       "empresa": "Integrance",
       "responsavel": "Washington",
       "solicitante": "Maiara",
       "atividade": "Cancelamento de nota fiscal",
-      "data": "9/5/2025",
+      "data": "09/05/2025",
       "tempo_gasto": "0:40",
-      "descritivo": "Ajustamos a configuração para cancelamento de notas na filial 2402 e excluímos duas notas que não haviam sido transmitidas ao SEFAZ."
+      "descritivo": "Ajustamos configuração de cancelamento de notas na filial 2402 e excluímos duas notas que não haviam sido transmitidas ao SEFAZ."
     },
     {
       "empresa": "Integrance",
       "responsavel": "Washington",
       "solicitante": "Aline",
       "atividade": "Acesso ao Protheus",
-      "data": "2/5/2025",
+      "data": "02/05/2025",
       "tempo_gasto": "0:15",
-      "descritivo": "Usuária relatou dificuldade de acesso ao sistema. Testamos e orientamos a troca de rede para 4G/5G, identificando instabilidade na conexão local."
+      "descritivo": "Usuária relatou dificuldade de acesso ao sistema. Testamos e orientamos troca para conexão 4G/5G, identificando instabilidade na rede local."
     },
     {
       "empresa": "Integrance",
       "responsavel": "Washington",
-      "solicitante": "Ana Claudia/Maiara",
+      "solicitante": "Ana Claudia / Maiara",
       "atividade": "Dúvidas sobre cadastro de TES",
-      "data": "5/5/2025",
+      "data": "05/05/2025",
       "tempo_gasto": "0:20",
-      "descritivo": "Orientação passo a passo para criação e configuração de TES, incluindo os cálculos de PIS e COFINS."
+      "descritivo": "Fornecemos orientação passo a passo para criação e configuração de TES, incluindo cálculos de PIS e COFINS."
     },
     {
       "empresa": "Integrance",
       "responsavel": "Washington",
       "solicitante": "Bruna",
-      "atividade": "Erro baixa financeira (Contabilização)",
-      "data": "6/5/2025",
+      "atividade": "Erro na baixa financeira (contabilização)",
+      "data": "06/05/2025",
       "tempo_gasto": "0:40",
-      "descritivo": "Ajuste no código-fonte que gerava falha durante a contabilização da baixa financeira, restaurando o fluxo normal."
+      "descritivo": "Corrigimos trecho do código-fonte que ocasionava falha durante a contabilização de baixa financeira, restaurando o fluxo normal."
     },
     {
       "empresa": "Integrance",
       "responsavel": "Washington",
       "solicitante": "Aline Glaicon",
-      "atividade": "Correção contabilização nota fiscal/baixa financeira",
-      "data": "7/5/2025",
+      "atividade": "Ajuste de contabilização de NF / baixa financeira",
+      "data": "07/05/2025",
       "tempo_gasto": "1:00",
       "descritivo": "Refinamos a regra de contabilização para descontar corretamente o valor dos juros de IR em títulos pagos com atraso."
     },
@@ -113,27 +113,99 @@
       "responsavel": "Thiago",
       "solicitante": "Maiara Toledo",
       "atividade": "Suporte na emissão de NF espelho",
-      "data": "12/5/2025",
+      "data": "12/05/2025",
       "tempo_gasto": "1:20",
-      "descritivo": "Auxiliamos na importação do espelho de NF e solucionamos erro de transmissão ao SEFAZ, causado pela data de desembaraço aduaneiro."
+      "descritivo": "Auxiliamos na importação do espelho de NF e solucionamos erro de transmissão ao SEFAZ causado pela data de desembaraço aduaneiro."
     },
     {
       "empresa": "Integrace",
       "responsavel": "Thiago",
       "solicitante": "Millena",
-      "atividade": "SFT de serviços",
-      "data": "13/5/2025",
-      "tempo_gasto": "1:20",
-      "descritivo": "Realizamos reunião para ajustes na TES de serviços e reprocessamos notas para correta contabilização nos livros fiscais."
+      "atividade": "Ajuste de SFT de serviços",
+      "data": "13/05/2025",
+      "tempo_gasto": "1:25",
+      "descritivo": "Realizamos reunião para ajustar TES de serviços e reprocessar notas, garantindo contabilização correta nos livros fiscais."
     },
     {
       "empresa": "Integrace",
       "responsavel": "Thiago",
       "solicitante": "Maiara Toledo",
-      "atividade": "PIS e COFINS divergentes",
-      "data": "14/5/2025",
+      "atividade": "Correção de PIS e COFINS",
+      "data": "14/05/2025",
       "tempo_gasto": "1:10",
-      "descritivo": "Analisamos nota com base de cálculo divergente para PIS e COFINS. Identificamos redução indevida na base de produto e corrigimos o cadastro para respeitar o padrão 'valor total menos ICMS'."
+      "descritivo": "Analisamos nota com divergência na base de cálculo de PIS e COFINS. Identificamos redução indevida na base de produto e corrigimos cadastro para seguir padrão “valor total menos ICMS”."
+    },
+    {
+      "empresa": "Integrance",
+      "responsavel": "Washington",
+      "solicitante": "Bruna / Daniela",
+      "atividade": "Retenção de PIS/COFINS/CSLL na baixa de títulos",
+      "data": "14/05/2025",
+      "tempo_gasto": "3:00",
+      "descritivo": "Inserimos manualmente no sistema os títulos de PIS, COFINS e CSLL para cada nota e ajustamos valores retidos do título principal."
+    },
+    {
+      "empresa": "Integrance",
+      "responsavel": "Washington",
+      "solicitante": "Maria Isabela",
+      "atividade": "Título não aparece no conciliador manual",
+      "data": "16/05/2025",
+      "tempo_gasto": "0:30",
+      "descritivo": "Após testes, o título apareceu normalmente. Enviei print dos parâmetros filtrados e orientei a usuária a validar a data de digitação, que estava diferente da data de movimentação."
+    },
+    {
+      "empresa": "Integrance",
+      "responsavel": "Washington",
+      "solicitante": "Maiara Toledo",
+      "atividade": "Base de PIS/COFINS sem custo de frete",
+      "data": "16/05/2025",
+      "tempo_gasto": "0:15",
+      "descritivo": "Orientei revisão do cadastro da TES para incluir corretamente o custo do frete na base de PIS e COFINS."
+    },
+    {
+      "empresa": "Integrace",
+      "responsavel": "Thiago",
+      "solicitante": "Maiara Toledo",
+      "atividade": "Ajuste de tag na importação de NFS",
+      "data": "19/05/2025",
+      "tempo_gasto": "0:40",
+      "descritivo": "Ajustamos a lógica de captura do número do endereço do cliente. Agora, se o número não estiver presente no XML, é inserido valor padrão automaticamente."
+    },
+    {
+      "empresa": "Integrance",
+      "responsavel": "Washington",
+      "solicitante": "Milena",
+      "atividade": "Configuração da nova filial EOS IT",
+      "data": "20/05/2025",
+      "tempo_gasto": "1:00",
+      "descritivo": "Cadastramos a nova filial no sistema e configuramos todos os parâmetros iniciais necessários."
+    },
+    {
+      "empresa": "Integrance",
+      "responsavel": "Washington",
+      "solicitante": "Maiara Toledo",
+      "atividade": "Retenção de ISS na baixa do título",
+      "data": "20/05/2025",
+      "tempo_gasto": "0:30",
+      "descritivo": "Durante a revisão do cadastro da TES, identificamos que o cliente estava indevidamente classificado como revendedor, quando na realidade deveria estar configurado como consumidor final. Essa divergência na parametrização impactava diretamente o cálculo dos impostos, especificamente a retenção de ISS, que não estava sendo considerada corretamente. Após realizarmos o ajuste no cadastro, a regra fiscal foi aplicada de forma correta, e a retenção de ISS passou a ser calculada conforme as exigências fiscais vigentes."
+    },
+    {
+      "empresa": "Integrance",
+      "responsavel": "Washington",
+      "solicitante": "Maiara Toledo",
+      "atividade": "Emissão de relatório de faturamento",
+      "data": "20/05/2025",
+      "tempo_gasto": "0:20",
+      "descritivo": "Forneci orientações para emissão do relatório de vendas. Ao não obter dados, conectei-me remotamente, ajustei filtros e concluí a geração com sucesso."
+    },
+    {
+      "empresa": "Integrance",
+      "responsavel": "Washington",
+      "solicitante": "Aline Glaicon",
+      "atividade": "Correção de saldo em relatório de títulos a receber",
+      "data": "20/05/2025",
+      "tempo_gasto": "0:30",
+      "descritivo": "Em call, analisamos parâmetros do relatório e reconfiguramos filtros para evitar retroação de saldos. Verificamos o correto cálculo do saldo do título."
     }
   ]
 }
